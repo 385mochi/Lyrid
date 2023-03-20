@@ -1,8 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-
-namespace Lyrid.Charts
+namespace Lyrid.GameScene.Charts
 {
     // 譜面の各要素の属性を定義する列挙型
     public enum ElementType

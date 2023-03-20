@@ -1,11 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace Lyrid.Charts
+namespace Lyrid.GameScene.Charts
 {
     // 譜面から読み込んだノーツのパラメータを落とし込むクラス
     public class NoteParam
     {
+        #region Field
         public ElementType type;   // 要素の属性
         public int laneNum;        // レーン番号
         public float var_1;        // ノーツならサイズ、それ以外なら更新値
@@ -13,11 +14,14 @@ namespace Lyrid.Charts
         public float var_3;        // スライドノートなら制御点の z 座標
         public int id;             // スライドノートの識別番号
         public int connectionType; // スライドノート、レーン操作の接続タイプ
+        #endregion
 
-        public NoteParam()
-        {
-        }
+        #region Constructor
+        public NoteParam(){}
+        #endregion
 
+        #region Methods
+        // パラメータの情報を log に表示するメソッド
         public string Info()
         {
             string info = "";
@@ -30,5 +34,6 @@ namespace Lyrid.Charts
             info += " ct:" + connectionType;
             return info;
         }
+        #endregion
     }
 }

@@ -3,12 +3,11 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
-namespace Lyrid.Charts
+namespace Lyrid.GameScene.Charts
 {
     // 譜面を管理するクラス
     public class Chart
     {
-
         #region Field
         // csv から読み込んだデータを各ノート毎にインデックス付けしたリスト
         public List<NoteParam> notesData = new List<NoteParam>();
@@ -23,16 +22,16 @@ namespace Lyrid.Charts
         public List<int>[] lanePosIndexList;
         // レーン幅更新のインデックスリスト
         public List<int>[] laneWidIndexList;
-
         // 総ノート数
         public int totalNotesNum;
+        // ノート初期落下速度
+        public float initSpeed = 5.0f;
         // レーンに関するパラメータ(生成数、初期配置数、幅、可視化)
-        public int maxLaneNum;
-        public int initLaneNum;
-        public float laneWidth;
-        public bool setLaneVisible;
+        public int maxLaneNum = 7;
+        public int initLaneNum = 7;
+        public float laneWidth = 1.0f;
+        public bool setLaneVisible = true;
         #endregion
-
 
         #region Constructor
         public Chart(TextAsset csvFile)
@@ -40,7 +39,6 @@ namespace Lyrid.Charts
             InputFile(csvFile);
         }
         #endregion
-
 
         #region Methods
         // csv を読み込むメソッド
@@ -58,6 +56,9 @@ namespace Lyrid.Charts
                 foreach(string str in strArray) str.Trim();
                 csvData.Add(strArray);
             }
+
+            float bpm = 120; // BPM
+            float top = 4, bottom = 4; // 拍子の分子と分母
 
             // 現在のインデックス
             int index = 0;
@@ -84,6 +85,14 @@ namespace Lyrid.Charts
                             offsetTime = int.Parse(csvData[index][1]);
                             index++;
                             break;
+                        case "#BPM":
+                            bpm = float.Parse(csvData[index][1]);
+                            index++;
+                            break;
+                        case "#SPEED":
+                            initSpeed = float.Parse(csvData[index][1]);
+                            index++;
+                            break;
                         default:
                             Debug.Assert(false);
                             break;
@@ -107,11 +116,8 @@ namespace Lyrid.Charts
                 laneWidIndexList[i] = new List<int>();
             }
 
-            int bpm = 120; // BPM
-            float top = 4, bottom = 4; // 拍子の分子と分母
-            float time = offsetTime; // 現在の秒数
-
             // 1 小節ごとに判定時間を計算
+            float time = offsetTime;
             while (index < csvData.Count - 1)
             {
                 int indexFrom = 0; // 小節の始めの行
@@ -285,6 +291,5 @@ namespace Lyrid.Charts
             Debug.Log(info);
         }
         #endregion
-
     }
 }
