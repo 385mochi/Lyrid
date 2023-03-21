@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
 using Lyrid.GameScene.Charts;
+using Lyrid.GameScene.Input;
 
 namespace Lyrid.GameScene.Notes
 {
@@ -12,11 +14,14 @@ namespace Lyrid.GameScene.Notes
         private List<IJudgeable> judgementTargets = new List<IJudgeable>();
         // オートプレイかどうか
         private bool autoPlay;
+        // TouchInputManager のインスタンス
+        private TouchInputManager touchInputManager;
         #endregion
 
         #region Constructor
-        public JudgementManager(bool autoPlay)
+        public JudgementManager(TouchInputManager touchInputManager, bool autoPlay)
         {
+            this.touchInputManager = touchInputManager;
             this.autoPlay = autoPlay;
         }
         #endregion
@@ -24,6 +29,18 @@ namespace Lyrid.GameScene.Notes
         #region Methods
         // GameSceneManager からフレームごとに呼び出されるメソッド
         public void ManagedUpdate(float time)
+        {
+            Judge(time);
+        }
+
+        // 判定対象を追加するメソッド
+        public void AddTarget(IJudgeable target)
+        {
+            judgementTargets.Add(target);
+        }
+
+        // 判定するメソッド
+        private void Judge(float time)
         {
             // オートプレイの場合
             if (autoPlay)
@@ -40,12 +57,50 @@ namespace Lyrid.GameScene.Notes
                     }
                 }
             }
-        }
-
-        // 判定対象を追加する
-        public void AddTarget(IJudgeable target)
-        {
-            judgementTargets.Add(target);
+            // 通常プレイの場合
+            else
+            {
+                // 各 Touch についてノートを判定
+                List<int> touchTypeList = touchInputManager.touchTypeList;
+                List<float> posXList = touchInputManager.posXList;
+                for (int i = 0; i < touchTypeList.Count; i++)
+                {
+                    int touchType = touchTypeList[i];
+                    float posX = posXList[i];
+                    // 判定対象リストを前側からチェック
+                    for (int j = 0; j < judgementTargets.Count; j++)
+                    {
+                        Note target = (Note)judgementTargets[j];
+                        JudgementType judgementType = target.Judge(time, touchType, posX);
+                        // 判定が None でなければそれを判定とする
+                        if (!target.judged && judgementType != JudgementType.None)
+                        {
+                            target.judged = true;
+                            Debug.Log(judgementType.ToString());
+                        }
+                        else
+                        {
+                            continue;
+                        }
+                    }
+                }
+                // Miss 対象またはすでに判定済みのノートがあれば削除
+                for (int i = judgementTargets.Count - 1; i >= 0; i--)
+                {
+                    Note target = (Note)judgementTargets[i];
+                    JudgementType judgementType = target.Judge(time, 0, 100);
+                    if (judgementType == JudgementType.Miss)
+                    {
+                        target.judged = true;
+                        Debug.Log(judgementType.ToString());
+                    }
+                    if (target.judged)
+                    {
+                        judgementTargets.RemoveAt(i);
+                        target.Remove();
+                    }
+                }
+            }
         }
         #endregion
     }

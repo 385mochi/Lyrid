@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Lyrid.GameScene.Charts;
+using Consts = Lyrid.GameScene.GameSceneConsts;
 
 namespace Lyrid.GameScene.Notes
 {
@@ -15,10 +16,8 @@ namespace Lyrid.GameScene.Notes
         public float judgementTime;
         // (判定時間 - 生成時間) の逆数
         protected float inverseTime;
-        // レーン番号
-        private int laneNum;
-        // ノート幅
-        private float NoteWidth;
+        // 判定の猶予座標
+        private float margin = 0.2f;
         // 判定されたかどうか
         public bool judged = false;
         // スライドノートの構成要素かどうか
@@ -43,10 +42,47 @@ namespace Lyrid.GameScene.Notes
 
         #region Methods
         public abstract void Move(float rate);
-        public abstract JudgementType Judge();
+        public abstract JudgementType Judge(float time, int touchType, float posX);
+
+        // View を削除するメソッド
         public void Remove()
         {
             noteView.Remove();
+        }
+
+        // 差分時間から判定を取得するメソッド
+        protected JudgementType GetJudgement(float diffTime)
+        {
+            if (diffTime < -Consts.BAD_RANGE)
+            {
+                return JudgementType.None;
+            }
+            else if (Consts.BAD_RANGE < diffTime)
+            {
+                return JudgementType.Miss;
+            }
+            else if (-Consts.PERFECT_RANGE < diffTime && diffTime < Consts.PERFECT_RANGE)
+            {
+                return JudgementType.Perfect;
+            }
+            else if (-Consts.GREAT_RANGE < diffTime && diffTime < Consts.GREAT_RANGE)
+            {
+                return JudgementType.Great;
+            }
+            else if (-Consts.GOOD_RANGE < diffTime && diffTime < Consts.GOOD_RANGE)
+            {
+                return JudgementType.Good;
+            }
+            else
+            {
+                return JudgementType.Bad;
+            }
+        }
+
+        // posX がノートの範囲内かどうか判定するメソッド
+        protected bool Touched(float posX)
+        {
+            return noteView.Touched(posX, margin);
         }
         #endregion
     }

@@ -7,7 +7,7 @@ namespace Lyrid.GameScene.Notes
     public interface IJudgeable
     {
         #region Methods
-        JudgementType Judge();
+        JudgementType Judge(float time, int touchType, float posX);
         #endregion
     }
 }

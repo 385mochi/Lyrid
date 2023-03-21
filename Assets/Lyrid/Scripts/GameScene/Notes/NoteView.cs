@@ -34,6 +34,14 @@ namespace Lyrid.GameScene.Notes
         {
             gameObject.SetActive(false);
         }
+        // posX がノートの範囲内かどうか判定するメソッド
+        public bool Touched(float posX, float margin)
+        {
+            return (
+                tfCache.position.x - (tfCache.lossyScale.x / 2.0f) - margin <= posX &&
+                tfCache.position.x + (tfCache.lossyScale.x / 2.0f) + margin >= posX
+            );
+        }
         #endregion
     }
 }

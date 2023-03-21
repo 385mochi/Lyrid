@@ -4,6 +4,7 @@ using UnityEngine;
 using Lyrid.GameScene.Charts;
 using Lyrid.GameScene.Notes;
 using Lyrid.GameScene.Audio;
+using Lyrid.GameScene.Input;
 
 namespace Lyrid.GameScene
 {
@@ -21,6 +22,8 @@ namespace Lyrid.GameScene
         private Chart chart;
         // AudioManager のインスタンス
         private AudioManager audioManager;
+        // TouchInputManager のインスタンスを生成
+        private TouchInputManager touchInputManager;
         // MovementManager のインスタンスを生成
         private MovementManager movementManager;
         // JudgementManager のインスタンスを生成
@@ -33,15 +36,20 @@ namespace Lyrid.GameScene
         // 最初のフレームで呼ばれるメソッド
         void Start()
         {
+            // 60fps に設定
+            QualitySettings.vSyncCount = 0;
+            Application.targetFrameRate = 60;
             // 譜面を生成
             chart = new Chart(testCsvFile);
             chart.DisplayInfo();
             // AudioManager のインスタンスを生成
             audioManager = new AudioManager(music);
+            // TouchInputManager のインスタンスを生成
+            touchInputManager = new TouchInputManager();
             // MovementManager のインスタンスを生成
             movementManager = new MovementManager();
             // JudgementManager のインスタンスを生成
-            judgementManager = new JudgementManager(audioPlay);
+            judgementManager = new JudgementManager(touchInputManager, audioPlay);
             // NotesManager のインスタンスを生成
             notesManager = new NotesManager(chart, movementManager, judgementManager);
         }
@@ -53,6 +61,7 @@ namespace Lyrid.GameScene
             audioManager.ManagedUpdate();
             float time = audioManager.GetTime();
             // 各インスタンスを Update
+            touchInputManager.ManagedUpdate();
             movementManager.ManagedUpdate(time);
             judgementManager.ManagedUpdate(time);
             notesManager.ManagedUpdate(time);
