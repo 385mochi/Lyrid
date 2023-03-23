@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using UnityEngine.InputSystem.EnhancedTouch;
 using Touch = UnityEngine.InputSystem.EnhancedTouch.Touch;
 using TouchPhase = UnityEngine.InputSystem.TouchPhase;
+using Lyrid.GameScene.Lanes;
 
 namespace Lyrid.GameScene.Input
 {
@@ -20,16 +21,26 @@ namespace Lyrid.GameScene.Input
         private float screenCenterX;
         private float screenNotWideInverse;
         private float screenWideInverse;
+        // レーンの Transform のリスト
+        private List<Transform> laneTransforms;
+        // Lane のリスト
+        private List<Lane> lanes;
         #endregion
 
         #region Constructor
         public TouchInputManager()
         {
+            // EnhancedTouch を有効にする
             EnhancedTouchSupport.Enable();
+            // スクリーン情報を取得する
             screenWide = Screen.width * 9 > Screen.height * 16;
             screenCenterX = Screen.width / 2;
             screenNotWideInverse = 2.0f / Screen.width * 4.22f;
             screenWideInverse = 2.0f / (Screen.height * 16.0f / 9.0f) * 4.22f;
+            // レーンの Transform のリストを取得する
+            laneTransforms = GameObject.FindWithTag("Lanes").GetComponent<LanesManager>().laneTransforms;
+            // Lane のリストを取得する
+            lanes = GameObject.FindWithTag("Lanes").GetComponent<LanesManager>().lanes;
         }
         #endregion
 
@@ -48,27 +59,34 @@ namespace Lyrid.GameScene.Input
                 // リストに追加
                 touchTypeList.Add(GetTouchTypeNum(touch));
                 posXList.Add(TouchPosXToWorldPosX(touch.screenPosition.x));
+                // レーンを光らせる
+                int index = TouchLane(touch);
+                if (index != -1)
+                {
+                    lanes[index].LightUp();
+                }
             }
         }
 
-        /*
         // touch の情報から，レーン番号を返す
-        private int TouchLane(Touch touch) {
-            if(GetTouchTypeNum(touch) == 1) {
-                int index = 1;
-                foreach(GameObject laneObj in lanes.laneObjects) {
-                    float laneWidth = laneObj.transform.localScale.x;
+        private int TouchLane(Touch touch)
+        {
+            if (GetTouchTypeNum(touch) == 1)
+            {
+                int index = 0;
+                foreach (Transform laneTransform in laneTransforms)
+                {
+                    float laneWidth = laneTransform.localScale.x;
                     float worldPosX = TouchPosXToWorldPosX(touch.screenPosition.x);
-                    if(laneObj.transform.position.x - worldPosX <= laneWidth / 2
-                    && laneObj.transform.position.x - worldPosX >= -laneWidth / 2) {
+                    if (laneTransform.position.x - worldPosX <= laneWidth / 2
+                    && laneTransform.position.x - worldPosX >= -laneWidth / 2) {
                         return index;
                     }
                     index++;
                 }
             }
-            return 0;
+            return -1;
         }
-        */
 
         // タッチしたスクリーン x 座標から判定レーン上のワールド座標に変換
         private float TouchPosXToWorldPosX(float touchPosX)

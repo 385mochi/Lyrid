@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Lyrid.GameScene.Charts;
 using Lyrid.GameScene.Notes;
+using Lyrid.GameScene.Lanes;
 using Lyrid.GameScene.Audio;
 using Lyrid.GameScene.Input;
 
@@ -20,13 +21,15 @@ namespace Lyrid.GameScene
         [SerializeField] private AudioSource music;
         // 譜面のインスタンス
         private Chart chart;
+        // LanesManager のインスタンス
+        private LanesManager lanesManager;
         // AudioManager のインスタンス
         private AudioManager audioManager;
-        // TouchInputManager のインスタンスを生成
+        // TouchInputManager のインスタンス
         private TouchInputManager touchInputManager;
-        // MovementManager のインスタンスを生成
+        // MovementManager のインスタンス
         private MovementManager movementManager;
-        // JudgementManager のインスタンスを生成
+        // JudgementManager のインスタンス
         private JudgementManager judgementManager;
         // NotesManager のインスタンス
         private NotesManager notesManager;
@@ -42,6 +45,9 @@ namespace Lyrid.GameScene
             // 譜面を生成
             chart = new Chart(testCsvFile);
             chart.DisplayInfo();
+            // LanesManager のインスタンスを取得し、レーンを生成する
+            lanesManager = GameObject.Find("Lanes").GetComponent<LanesManager>();
+            lanesManager.SetLanes(chart.maxLaneNum, chart.initLaneNum, chart.laneWidth, chart.setLaneVisible);
             // AudioManager のインスタンスを生成
             audioManager = new AudioManager(music);
             // TouchInputManager のインスタンスを生成

@@ -77,6 +77,7 @@ namespace Lyrid.GameScene.Notes
                         {
                             target.judged = true;
                             Debug.Log(judgementType.ToString());
+                            break;
                         }
                         else
                         {
