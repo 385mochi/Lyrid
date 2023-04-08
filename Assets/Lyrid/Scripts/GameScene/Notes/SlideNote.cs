@@ -110,6 +110,11 @@ namespace Lyrid.GameScene.Notes
                     return JudgementType.Miss;
                 }
             }
+            // 末尾が判定済みなら Judged を返す
+            if (noteList[noteList.Count - 1].judged)
+            {
+                return JudgementType.Judged;
+            }
             return JudgementType.None;
         }
 
@@ -197,6 +202,7 @@ namespace Lyrid.GameScene.Notes
                     if (dummyNotePressed)
                     {
                         judgementManager.AddJudgement(JudgementType.Perfect);
+                        dummyNotePressed = false;
                     }
                 }
                 else

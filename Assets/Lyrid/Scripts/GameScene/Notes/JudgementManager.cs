@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Lyrid.GameScene.Charts;
 using Lyrid.GameScene.Input;
+using Lyrid.GameScene.Score;
 
 namespace Lyrid.GameScene.Notes
 {
@@ -18,6 +19,8 @@ namespace Lyrid.GameScene.Notes
         private List<int> judgedTargetIndexList;
         /// <summary> オートプレイかどうか </summary>
         private bool autoPlay;
+        /// <summary> ScoreManager のインスタンス </summary>
+        private ScoreManager scoreManager;
         /// <summary> TouchInputManager のインスタンス </summary>
         private TouchInputManager touchInputManager;
         #endregion
@@ -25,8 +28,9 @@ namespace Lyrid.GameScene.Notes
         #region Constructor
         /// <param name="touchInputManager"> TouchInputManager のインスタンス </param>
         /// <param name="autoPlay"> オートプレイかどうか </param>
-        public JudgementManager(TouchInputManager touchInputManager, bool autoPlay)
+        public JudgementManager(ScoreManager scoreManager, TouchInputManager touchInputManager, bool autoPlay)
         {
+            this.scoreManager = scoreManager;
             this.touchInputManager = touchInputManager;
             this.autoPlay = autoPlay;
         }
@@ -54,9 +58,10 @@ namespace Lyrid.GameScene.Notes
         /// <summary>
         /// 判定を追加するメソッド
         /// </summary>
-        /// <param name="type"> 判定の種類 </param>
-        public void AddJudgement(JudgementType type)
+        /// <param name="judgementType"> 判定の種類 </param>
+        public void AddJudgement(JudgementType judgementType)
         {
+            scoreManager.AddScore(judgementType);
         }
 
         /// <summary>
@@ -81,6 +86,7 @@ namespace Lyrid.GameScene.Notes
                     if (note.judgementTime - 0.008f <= time)
                     {
                         note.judged = true;
+                        scoreManager.AddScore(JudgementType.Perfect);
                     }
                 }
             }
@@ -113,35 +119,39 @@ namespace Lyrid.GameScene.Notes
                         // そのほかの場合はそれを判定とする
                         else
                         {
-                            Debug.Log(judgementType.ToString());
+                            scoreManager.AddScore(judgementType);
                             break;
                         }
                     }
                 }
-                // タッチされていないときは、存在するスライドノートのコンボを切る
+                // タッチされていないときは、touchType = 0 で判定を行う
                 if (touchTypeList.Count == 0)
                 {
                     // 判定対象リストを前側からチェック
-                    for (int j = 0; j < targets.Count; j++)
+                    for (int i = 0; i < targets.Count; i++)
                     {
-                        IJudgeable target = targets[j];
-                        if (target is SlideNote)
+                        IJudgeable target = targets[i];
+                        JudgementType judgementType = target.Judge(time, 0, 0);
+                        // 判定が None であれば無視
+                        if (judgementType == JudgementType.None)
                         {
-                            JudgementType judgementType = target.Judge(time, 0, 100);
-                            // 判定が None であれば無視
-                            if (judgementType == JudgementType.None)
-                            {
-                                continue;
-                            }
-                            // そのほかの場合はそれを判定とする
-                            else
-                            {
-                                Debug.Log(judgementType.ToString());
-                            }
+                            continue;
+                        }
+                        // 判定が Judged であれば判定済みリストに追加する
+                        else if (judgementType == JudgementType.Judged)
+                        {
+                            judgedTargetIndexList.Add(i);
+                        }
+                        // 判定が Miss であれば判定する
+                        else if (judgementType == JudgementType.Miss)
+                        {
+                            scoreManager.AddScore(judgementType);
                         }
                     }
                 }
             }
+            // 判定済みリストを昇順にソート
+            judgedTargetIndexList.Sort();
             // すでに判定済みのノートを削除
             for (int i = judgedTargetIndexList.Count - 1; i >= 0; i--)
             {

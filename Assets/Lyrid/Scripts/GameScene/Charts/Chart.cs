@@ -28,6 +28,8 @@ namespace Lyrid.GameScene.Charts
         public List<int>[] laneWidIndexList { get; private set; }
         /// <summary> 総ノート数 </summary>
         public int totalNotesNum { get; private set; }
+        /// <summary> 総判定対象数/ </summary>
+        public int totalJudgementTargetsNum { get; private set; }
         /// <summary> ノート初期落下速度 </summary>
         public float initSpeed { get; private set; }
         /// <summary> レーンの最大生成数 </summary>
@@ -52,6 +54,7 @@ namespace Lyrid.GameScene.Charts
             laneWidth = 1.0f;
             setLaneVisible = true;
             InputFile(csvFile);
+            totalJudgementTargetsNum += totalNotesNum;
         }
         #endregion
 
@@ -262,9 +265,13 @@ namespace Lyrid.GameScene.Charts
                         {
                             slideNoteIndexList.Add(slideNoteIndexTmpList[id]);
                             slideNoteIndexTmpList[id] = new List<int>();
+                            totalJudgementTargetsNum++;
                         }
                         newList.Add(noteParam);
-                        totalNotesNum++;
+                        if (noteParam.connectionType == 0 || noteParam.connectionType == 1)
+                        {
+                            totalNotesNum++;
+                        }
                         index += 7;
                         break;
                     // レーン位置変更の場合

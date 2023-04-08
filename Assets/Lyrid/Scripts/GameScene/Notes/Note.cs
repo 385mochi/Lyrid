@@ -42,6 +42,7 @@ namespace Lyrid.GameScene.Notes
             GameObject noteObj = GameObject.FindWithTag("NoteObjectPool").GetComponent<ObjectPool>().GetObject();
             view = noteObj.GetComponent<NoteView>();
             view.Init(generatedTime, judgementTime, noteParam, isSlideNote);
+            judged = false;
         }
         #endregion
 

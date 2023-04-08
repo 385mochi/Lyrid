@@ -28,6 +28,7 @@ namespace Lyrid.GameScene.Notes
         /// <returns> 以降 Move を実行するかどうか </returns>
         public override bool Move(float time)
         {
+            // ノーツの位置を更新する
             view.Move((judgementTime - time) * inverseTime);
             return view.gameObject.activeSelf;
         }

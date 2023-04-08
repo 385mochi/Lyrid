@@ -26,6 +26,11 @@ public class RectScalerWithViewport : MonoBehaviour
         UpdateRect();
     }
 
+    private void Update()
+    {
+        UpdateRectWithCheck();
+    }
+
 #if UNITY_EDITOR
     private void OnValidate()
     {
@@ -41,6 +46,17 @@ public class RectScalerWithViewport : MonoBehaviour
         UpdateRect();
     }
 #endif
+
+    void UpdateRectWithCheck()
+    {
+        Camera cam = Camera.main;
+        float width = cam.rect.width * Screen.width;
+        float height = cam.rect.height * Screen.height;
+        if(m_width == width && m_height == height && m_matchWidthOrHeight == matchWidthOrHeight ){
+            return;
+        }
+        UpdateRect();
+    }
 
     void UpdateRect()
     {

@@ -28,16 +28,8 @@ namespace Lyrid.GameScene.Notes
         /// <returns> 以降 Move を実行するかどうか </returns>
         public override bool Move(float time)
         {
-            // 差分時間
-            float diffTime = time - judgementTime;
             // ノーツの位置を更新する
-            view.Move((-diffTime) * inverseTime);
-            // Miss 判定ならば判定済みとする
-            if (GetJudgement(diffTime) == JudgementType.Miss)
-            {
-                Remove();
-                judged = true;
-            }
+            view.Move((judgementTime - time) * inverseTime);
             return view.gameObject.activeSelf;
         }
 
@@ -50,20 +42,28 @@ namespace Lyrid.GameScene.Notes
         /// <returns> 判定時間 </returns>
         public override JudgementType Judge(float time, int touchType, float posX)
         {
-            // 差分時間
-            float diffTime = time - judgementTime;
-            // 差分時間から判定を取得
-            JudgementType judgementType = GetJudgement(diffTime);
             // 判定済みであれば Judged を返す
             if (judged)
             {
                 return JudgementType.Judged;
             }
-            // None であればそのまま返す
-            if (judgementType == JudgementType.None)
+            // 差分時間
+            float diffTime = time - judgementTime;
+            // 差分時間から判定を取得
+            JudgementType judgementType = GetJudgement(diffTime);
+            // None または Judged であればそのまま返す
+            if (judgementType == JudgementType.None || judgementType == JudgementType.Judged)
             {
-                return JudgementType.None;
+               return judgementType;
             }
+            // touchType が 0 かつ Miss 判定であればそれを返す
+            if (touchType == 0 && judgementType == JudgementType.Miss)
+            {
+                Remove();
+                judged = true;
+                return JudgementType.Miss;
+            }
+
             // タッチ途中であり、判定時間が正の値で、ノートの範囲内であれば判定する
             if ((touchType == 2 || touchType == 3) && (diffTime >= -0.008f) && Touched(posX))
             {

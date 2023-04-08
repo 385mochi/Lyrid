@@ -1,11 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Lyrid.GameScene.Charts;
-using Lyrid.GameScene.Notes;
-using Lyrid.GameScene.Lanes;
+using DG.Tweening;
 using Lyrid.GameScene.Audio;
+using Lyrid.GameScene.Charts;
 using Lyrid.GameScene.Input;
+using Lyrid.GameScene.Lanes;
+using Lyrid.GameScene.Notes;
+using Lyrid.GameScene.Score;
 
 namespace Lyrid.GameScene
 {
@@ -33,6 +35,8 @@ namespace Lyrid.GameScene
         private MovementManager movementManager;
         /// <summary> JudgementManager のインスタンス </summary>
         private JudgementManager judgementManager;
+        /// <summary> ScoreManager のインスタンス </summary>
+        private ScoreManager scoreManager;
         /// <summary> NotesManager のインスタンス </summary>
         private NotesManager notesManager;
         #endregion
@@ -43,6 +47,7 @@ namespace Lyrid.GameScene
             // 60fps に設定
             QualitySettings.vSyncCount = 0;
             Application.targetFrameRate = 60;
+
             // 譜面を生成
             chart = new Chart(testCsvFile);
             // LanesManager のインスタンスを取得し、レーンを生成する
@@ -54,10 +59,15 @@ namespace Lyrid.GameScene
             touchInputManager = new TouchInputManager();
             // MovementManager のインスタンスを生成
             movementManager = new MovementManager();
+            // ScoreManager のインスタンスを生成
+            scoreManager = new ScoreManager(chart.totalJudgementTargetsNum);
             // JudgementManager のインスタンスを生成
-            judgementManager = new JudgementManager(touchInputManager, audioPlay);
+            judgementManager = new JudgementManager(scoreManager, touchInputManager, audioPlay);
             // NotesManager のインスタンスを生成
             notesManager = new NotesManager(chart, movementManager, judgementManager);
+
+            // DOTween を初期化
+            DOTween.Init();
         }
 
         void Update()
@@ -65,11 +75,11 @@ namespace Lyrid.GameScene
             // AudioManager を Update し、現在の再生時間を取得
             audioManager.ManagedUpdate();
             float time = audioManager.time;
-            // 各インスタンスを Update
+            // 各 Manager を Update
             touchInputManager.ManagedUpdate();
-            judgementManager.ManagedUpdate(time);
             notesManager.ManagedUpdate(time);
             movementManager.ManagedUpdate(time);
+            judgementManager.ManagedUpdate(time);
         }
         #endregion
     }

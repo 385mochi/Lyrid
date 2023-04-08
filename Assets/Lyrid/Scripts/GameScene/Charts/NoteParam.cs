@@ -38,12 +38,12 @@ namespace Lyrid.GameScene.Charts
         {
             string info = "";
             info += type.ToString();
-            info += " lane:" + laneNum;
-            info += " v1:" + var_1;
-            info += " v2:" + var_2;
-            info += " v3:" + var_3;
-            info += " v4:" + var_4;
-            info += " ct:" + connectionType;
+            info += $" lane: {laneNum}";
+            info += $" v1: {var_1}";
+            info += $" v2: {var_2}";
+            info += $" v3: {var_3}";
+            info += $" v4: {var_4}";
+            info += $" ct: {connectionType}";
             return info;
         }
         #endregion
