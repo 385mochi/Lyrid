@@ -4,26 +4,32 @@ using UnityEngine;
 
 namespace Lyrid.GameScene.Notes
 {
-    // オブジェクトプールのクラス
+    /// <summary>
+    /// オブジェクトプールのクラス
+    /// </summary>
     public class ObjectPool : MonoBehaviour
     {
         #region Field
-        // オブジェクトプール
+        /// <summary> オブジェクトプール </summary>
         private List<GameObject> pool;
-        // プールするオブジェクトの Prefab
+        /// <summary> プールするオブジェクトの Prefab </summary>
         [SerializeField] private GameObject prefabObj;
-        #endregion
-
-        #region Constructor
-        void Start()
-        {
-            Reset(30);
-        }
+        /// <summary> 初期オブジェクト数 </summary>
+        [SerializeField] int initNum;
         #endregion
 
         #region Methods
-        // プールを初期化する
-        public void Reset(int size) {
+        void Start()
+        {
+            Init(initNum);
+        }
+
+        /// <summary>
+        /// プールを初期化する
+        /// </summary>
+        /// <param name="size"> 初期化数 </param>
+        public void Init(int size)
+        {
             // プールが存在するときは含まれるオブジェクトをすべて破壊
             if (pool != null)
             {
@@ -42,7 +48,10 @@ namespace Lyrid.GameScene.Notes
             }
         }
 
-        // プールからオブジェクトを取り出す
+        /// <summary>
+        /// プールからオブジェクトを取り出す
+        /// </summary>
+        /// <returns> 取り出したオブジェクト </returns>
         public GameObject GetObject()
         {
             // プール内に非アクティブのオブジェクトがあればそれを返す

@@ -4,31 +4,38 @@ using UnityEngine;
 
 namespace Lyrid.GameScene.Lanes
 {
-    // レーンの管理を行うクラス
+    /// <summary>
+    /// レーンの管理を行うクラス
+    /// </summary>
     public class LanesManager : MonoBehaviour
     {
         #region Field
-        // レーンオブジェクトの Prefab
-        [SerializeField] GameObject lanePrefab;
-        // レーンオブジェクトのリスト
-        public List<GameObject> laneObjects = new List<GameObject>();
-        // Transform のリスト
-        public List<Transform> laneTransforms = new List<Transform>();
-        // Lane のリスト
-        public List<Lane> lanes = new List<Lane>();
-        // レーンの最大数
+        /// <summary> レーンオブジェクトの Prefab </summary>
+        [SerializeField] private GameObject lanePrefab;
+        /// <summary> レーンの最大数 </summary>
         private int laneNum;
-        // レーンの初期数
+        /// <summary> レーンの初期数 </summary>
         private int initlaneNum;
-        // レーンの初期幅
+        /// <summary> レーンの初期幅 </summary>
         private float laneWidth;
-        // レーンの可視化の初期状態
+        /// <summary> レーンの可視化の初期状態 </summary>
         private bool setVisible;
         #endregion
 
+        #region Property
+        /// <summary> レーンオブジェクトのリスト </summary>
+        public List<GameObject> laneObjects { get; private set; }
+        /// <summary> レーンの Transform のリスト </summary>
+        public List<Transform> laneTransforms { get; private set; }
+        /// <summary> Lane のリスト </summary>
+        public List<Lane> lanes { get; private set; }
+        #endregion
+
         #region Methods
-        // レーンを初期状態にするメソッド
-        public void Reset()
+        /// <summary>
+        /// レーンを初期状態にするメソッド
+        /// </summary>
+        public void Init()
         {
             if (laneObjects != null)
             {
@@ -37,18 +44,27 @@ namespace Lyrid.GameScene.Lanes
                     Destroy(laneObj);
                 }
             }
-            laneObjects = new List<GameObject>();
-            laneTransforms = new List<Transform>();
             SetLanes(laneNum, initlaneNum, laneWidth, setVisible);
         }
 
-        // レーンを生成するメソッド
+        /// <summary>
+        /// レーンを生成するメソッド
+        /// </summary>
+        /// <param name="laneNum"> 最大レーン数 </param>
+        /// <param name="initlaneNum"> 初期レーン数 </param>
+        /// <param name="laneWidth"> 初期レーン幅</param>
+        /// <param name="setVisible"> 可視化するかどうか </param>
         public void SetLanes(int laneNum, int initlaneNum, float laneWidth, bool setVisible)
         {
             this.laneNum = laneNum;
             this.initlaneNum = initlaneNum;
             this.laneWidth = laneWidth;
             this.setVisible = setVisible;
+
+            laneObjects = new List<GameObject>();
+            laneTransforms = new List<Transform>();
+            lanes= new List<Lane>();
+
             // レーンの x 座標
             float posX = -(initlaneNum - 1) * laneWidth / 2.0f;
             float delay = 2.0f;
@@ -87,20 +103,11 @@ namespace Lyrid.GameScene.Lanes
                     lane.transform.localScale.y,
                     lane.transform.localScale.z
                 );
-                /*
-                iTween.ScaleFrom(
-                    lane,
-                    iTween.Hash(
-                        "y", 0.0f,
-                        "time", 3.0f,
-                        "delay", delay
-                    )
-                );
-                */
                 posX += laneWidth;
             }
         }
 
+        //TODO: Move を実装
         // index 番目のレーンを位置 pos へ 時間 t で移動させるメソッド
         public void Move(int index, float pos, float t, int option, float delay) {
             /*
@@ -116,6 +123,7 @@ namespace Lyrid.GameScene.Lanes
             */
         }
 
+        //TODO: Scale を実装
         // index 番目のレーンを幅 width へ 時間 t で変化させる
         public void Scale(int index, float width, float t, int option, float delay) {
             /*
@@ -155,19 +163,6 @@ namespace Lyrid.GameScene.Lanes
                 );
             }
             */
-        }
-
-        public void SetVisibleTrue(int index) {
-            laneObjects[index].GetComponent<Lane>().SetVisible(true);
-        }
-
-        public void SetVisibleFalse(int index) {
-            laneObjects[index].GetComponent<Lane>().SetVisible(false);
-        }
-
-        public void LightUp(int index) {
-            if(index < 0) return;
-            laneObjects[index].GetComponent<Lane>().LightUp();
         }
         #endregion
     }

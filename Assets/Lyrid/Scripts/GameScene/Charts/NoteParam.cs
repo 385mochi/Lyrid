@@ -3,17 +3,26 @@ using System.Collections.Generic;
 
 namespace Lyrid.GameScene.Charts
 {
-    // 譜面から読み込んだノーツのパラメータを落とし込むクラス
+    /// <summary>
+    /// 譜面から読み込んだノーツのパラメータを保持するクラス
+    /// </summary>
     public class NoteParam
     {
-        #region Field
-        public ElementType type;   // 要素の属性
-        public int laneNum;        // レーン番号
-        public float var_1;        // ノーツならサイズ、それ以外なら更新値
-        public float var_2;        // スライドノートなら制御点の x 座標
-        public float var_3;        // スライドノートなら制御点の z 座標
-        public int id;             // スライドノートの識別番号
-        public int connectionType; // スライドノート、レーン操作の接続タイプ
+        #region Property
+        /// <summary> 要素の属性 </summary>
+        public ElementType type { get; set; }
+        /// <summary> レーン番号 </summary>
+        public int laneNum { get; set; }
+        /// <summary> ノーツならサイズ、それ以外なら更新値 </summary>
+        public float var_1 { get; set; }
+        /// <summary>  スライドノートなら制御点の x 座標の割合 </summary>
+        public float var_2 { get; set; }
+        /// <summary> スライドノートなら制御点の z 座標の割合 </summary>
+        public float var_3 { get; set; }
+        /// <summary> 予備用変数 (スライドノートの先頭ノートの判定時間) </summary>
+        public float var_4 { get; set; }
+        /// <summary> スライドノート、レーン操作の接続タイプ </summary>
+        public int connectionType { get; set; }
         #endregion
 
         #region Constructor
@@ -21,7 +30,10 @@ namespace Lyrid.GameScene.Charts
         #endregion
 
         #region Methods
-        // パラメータの情報を log に表示するメソッド
+        /// <summary>
+        /// パラメータの情報を log に表示するメソッド
+        /// </summary>
+        /// <returns> パラメータ一覧の文字列 </returns>
         public string Info()
         {
             string info = "";
@@ -30,7 +42,7 @@ namespace Lyrid.GameScene.Charts
             info += " v1:" + var_1;
             info += " v2:" + var_2;
             info += " v3:" + var_3;
-            info += " id:" + id;
+            info += " v4:" + var_4;
             info += " ct:" + connectionType;
             return info;
         }

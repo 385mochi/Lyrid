@@ -6,16 +6,16 @@ using Lyrid.GameScene.Charts;
 namespace Lyrid.GameScene.Notes
 {
     /// <summary>
-    /// タップノートのクラス
+    /// スワイプノートのクラス
     /// </summary>
-    public class TapNote : Note
+    public class SwipeNote : Note
     {
         #region Constructor
         /// <param name="generatedTime"> 生成時間 </param>
         /// <param name="judgementTime"> 判定時間 </param>
-        /// <param name="noteParam"> ノートの種類 </param>
+        /// <param name="noteParam"> ノートのパラメータ </param>
         /// <param name="isSlideNote"> スライドノートかどうか </param>
-        public TapNote(float generatedTime, float judgementTime, NoteParam noteParam, bool isSlideNote)
+        public SwipeNote(float generatedTime, float judgementTime, NoteParam noteParam, bool isSlideNote)
             : base(generatedTime, judgementTime, noteParam, isSlideNote)
         {}
         #endregion
@@ -44,10 +44,10 @@ namespace Lyrid.GameScene.Notes
         /// <summary>
         /// ノートを判定するメソッド
         /// </summary>
-        /// <param name="time"> 現在の時間 </param>
+        /// <param name="time"> 判定時間 </param>
         /// <param name="touchType"> タッチの種類 </param>
         /// <param name="posX"> タッチ位置の x 座標 </param>
-        /// <returns></returns>
+        /// <returns> 判定時間 </returns>
         public override JudgementType Judge(float time, int touchType, float posX)
         {
             // 差分時間
@@ -62,9 +62,16 @@ namespace Lyrid.GameScene.Notes
             // None であればそのまま返す
             if (judgementType == JudgementType.None)
             {
-               return JudgementType.None;
+                return JudgementType.None;
             }
-            // タッチ開始かつノートの範囲内であれば判定済みとしてその判定を返す
+            // タッチ途中であり、判定時間が正の値で、ノートの範囲内であれば判定する
+            if ((touchType == 2 || touchType == 3) && (diffTime >= -0.008f) && Touched(posX))
+            {
+                Remove();
+                judged = true;
+                return judgementType;
+            }
+            // タッチ開始かつノートの範囲内であれば判定する
             if (touchType == 1 && Touched(posX))
             {
                 Remove();

@@ -9,22 +9,31 @@ using Lyrid.GameScene.Lanes;
 
 namespace Lyrid.GameScene.Input
 {
-    // タッチ入力を管理するクラス
+    /// <summary>
+    /// タッチ入力を管理するクラス
+    /// </summary>
     public class TouchInputManager
     {
         #region Field
-        // タッチの種類と x 座標のリスト
-        public List<int> touchTypeList;
-        public List<float> posXList;
-        // スクリーン情報
+        /// <summary> スクリーンが 16:9 よりも横に広いかどうか </summary>
         private bool screenWide;
+        /// <summary> スクリーンの中心の x 座標 </summary>
         private float screenCenterX;
+        /// <summary> スクリーン座標調整用 </summary>
         private float screenNotWideInverse;
+        /// <summary> スクリーン座標調整用 </summary>
         private float screenWideInverse;
-        // レーンの Transform のリスト
+        /// <summary> レーンの Transform のリスト </summary>
         private List<Transform> laneTransforms;
-        // Lane のリスト
+        /// <summary> Lane のリスト </summary>
         private List<Lane> lanes;
+        #endregion
+
+        #region Property
+        /// <summary> タッチの種類のリスト </summary>
+        public List<int> touchTypeList { get; private set; }
+        /// <summary> タッチの x 座標のリスト </summary>
+        public List<float> posXList { get; private set; }
         #endregion
 
         #region Constructor
@@ -45,12 +54,14 @@ namespace Lyrid.GameScene.Input
         #endregion
 
         #region Methods
-        // GameSceneManager からフレームごとに呼び出されるメソッド
+        /// <summary>
+        /// GameSceneManager からフレーム毎に呼び出されるメソッド
+        /// </summary>
         public void ManagedUpdate()
         {
             // リストを初期化
-            touchTypeList = new List<int>();
-            posXList = new List<float>();
+            touchTypeList = new List<int>(10);
+            posXList = new List<float>(10);
             // 各 touch について処理
             var activeTouches = Touch.activeTouches;
             for (int i = 0; i < activeTouches.Count; i++)
@@ -68,7 +79,11 @@ namespace Lyrid.GameScene.Input
             }
         }
 
-        // touch の情報から，レーン番号を返す
+        /// <summary>
+        /// タッチ情報からレーン番号を返すメソッド
+        /// </summary>
+        /// <param name="touch"> タッチ情報 </param>
+        /// <returns> レーン番号 (0-based) </returns>
         private int TouchLane(Touch touch)
         {
             if (GetTouchTypeNum(touch) == 1)
@@ -88,20 +103,21 @@ namespace Lyrid.GameScene.Input
             return -1;
         }
 
-        // タッチしたスクリーン x 座標から判定レーン上のワールド座標に変換
+        /// <summary>
+        /// タッチしたスクリーン x 座標から判定レーン上のワールド座標に変換するメソッド
+        /// </summary>
+        /// <param name="touchPosX"> スクリーン x 座標 </param>
+        /// <returns> 対応するワールド座標 </returns>
         private float TouchPosXToWorldPosX(float touchPosX)
         {
-            if (screenWide)
-            {
-                return (touchPosX - screenCenterX) * screenWideInverse;
-            }
-            else
-            {
-                return (touchPosX - screenCenterX) * screenNotWideInverse;
-            }
+            return (touchPosX - screenCenterX) * ((screenWide) ? screenWideInverse : screenNotWideInverse);
         }
 
-        // Touch の情報から番号に変換
+        /// <summary>
+        /// Touch の情報から番号に変換
+        /// </summary>
+        /// <param name="touch"> タッチ情報 </param>
+        /// <returns> TouchPhase に対応した番号 </returns>
         private int GetTouchTypeNum(Touch touch) {
             switch (touch.phase)
             {

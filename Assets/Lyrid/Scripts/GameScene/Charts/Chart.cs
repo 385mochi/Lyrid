@@ -5,43 +5,61 @@ using UnityEngine;
 
 namespace Lyrid.GameScene.Charts
 {
-    // 譜面を管理するクラス
+    /// <summary>
+    /// 譜面を管理するクラス
+    /// </summary>
     public class Chart
     {
         #region Field
-        // csv から読み込んだデータを各ノート毎にインデックス付けしたリスト
-        public List<NoteParam> notesData = new List<NoteParam>();
-        // インデックスに対応する時間を格納するリスト
-        public List<float> timeData = new List<float>();
-        // スライドノートの連続するインデックスを格納するリスト
-        public List<List<int>> slideNotesData = new List<List<int>>();
-        // スライドノートのインデックスを一時的に記録しておくリスト
-        // 生成時にインデックス順に関係なく繋がっているノートをまとめて生成するために必要
-        private List<int>[] slideNoteIndexList;
-        // レーン位置更新のインデックスリスト
-        public List<int>[] lanePosIndexList;
-        // レーン幅更新のインデックスリスト
-        public List<int>[] laneWidIndexList;
-        // 総ノート数
-        public int totalNotesNum;
-        // ノート初期落下速度
-        public float initSpeed = 5.0f;
-        // レーンに関するパラメータ(生成数、初期配置数、幅、可視化)
-        public int maxLaneNum = 7;
-        public int initLaneNum = 7;
-        public float laneWidth = 1.0f;
-        public bool setLaneVisible = true;
+        /// <summary> スライドノートのインデックスを一時的に記録しておくリスト </summary>
+        private List<int>[] slideNoteIndexTmpList;
+        #endregion
+
+        #region Property
+        /// <summary> csv から読み込んだデータを各ノート毎にインデックス付けしたリスト </summary>
+        public List<NoteParam> notesData { get; private set; }
+        /// <summary> インデックスに対応する時間を格納するリスト
+        public List<float> timeData { get; private set; }
+        /// <summary> スライドノートの連続するインデックスを格納するリスト </summary>
+        public List<List<int>> slideNoteIndexList { get; private set; }
+        /// <summary> レーン位置更新のインデックスリスト </summary>
+        public List<int>[] lanePosIndexList { get; private set; }
+        /// <summary> レーン幅更新のインデックスリスト </summary>
+        public List<int>[] laneWidIndexList { get; private set; }
+        /// <summary> 総ノート数 </summary>
+        public int totalNotesNum { get; private set; }
+        /// <summary> ノート初期落下速度 </summary>
+        public float initSpeed { get; private set; }
+        /// <summary> レーンの最大生成数 </summary>
+        public int maxLaneNum { get; private set; }
+        /// <summary> レーンの初期配置数 </summary>
+        public int initLaneNum { get; private set; }
+        /// <summary> レーンの初期幅 </summary>
+        public float laneWidth { get; private set; }
+        /// <summary> レーンの初期可視化 </summary>
+        public bool setLaneVisible { get; private set; }
         #endregion
 
         #region Constructor
+        /// <param name="csvFile"> 読み込む譜面の csv ファイル </param>
         public Chart(TextAsset csvFile)
         {
+            notesData = new List<NoteParam>();
+            timeData = new List<float>();
+            slideNoteIndexList = new List<List<int>>();
+            initSpeed = 5.0f;
+            maxLaneNum = 7;
+            laneWidth = 1.0f;
+            setLaneVisible = true;
             InputFile(csvFile);
         }
         #endregion
 
         #region Methods
-        // csv を読み込むメソッド
+        /// <summary>
+        /// csv を読み込むメソッド
+        /// </summary>
+        /// <param name="csvFile"> 読み込む csv ファイル </param>
         private void InputFile(TextAsset csvFile)
         {
             // csv ファイルのデータを格納するリスト
@@ -56,6 +74,7 @@ namespace Lyrid.GameScene.Charts
                 foreach(string str in strArray) str.Trim();
                 csvData.Add(strArray);
             }
+            reader.Close();
 
             float bpm = 120; // BPM
             float top = 4, bottom = 4; // 拍子の分子と分母
@@ -106,12 +125,12 @@ namespace Lyrid.GameScene.Charts
             }
 
             // スライドノート、レーン操作リストのインスタンスを生成
-            slideNoteIndexList = new List<int>[maxLaneNum];
+            slideNoteIndexTmpList = new List<int>[maxLaneNum];
             lanePosIndexList = new List<int>[maxLaneNum];
             laneWidIndexList = new List<int>[maxLaneNum];
             for (int i = 0; i < maxLaneNum; i++)
             {
-                slideNoteIndexList[i] = new List<int>();
+                slideNoteIndexTmpList[i] = new List<int>();
                 lanePosIndexList[i] = new List<int>();
                 laneWidIndexList[i] = new List<int>();
             }
@@ -178,7 +197,11 @@ namespace Lyrid.GameScene.Charts
 
         }
 
-        // 1 行分のノーツ情報を 1 つずつに分割するメソッド
+        /// <summary>
+        /// 1 行分のノーツ情報を要素ごとに分割するメソッド
+        /// </summary>
+        /// <param name="strArray"> 1 行分の譜面データ </param>
+        /// <returns> 分割した要素のパラメータのリスト </returns>
         private List<NoteParam> splitLine(string[] strArray)
         {
             // 分割した後のリスト
@@ -226,19 +249,19 @@ namespace Lyrid.GameScene.Charts
                     // スライドノーツの場合
                     case 4:
                         noteParam.type = ElementType.Slide;
-                        noteParam.laneNum = int.Parse(strArray[index + 1]) - 1;
+                        noteParam.laneNum = int.Parse(strArray[index + 1]);
                         noteParam.var_1 = float.Parse(strArray[index + 2]);
                         noteParam.var_2 = float.Parse(strArray[index + 3]);
                         noteParam.var_3 = float.Parse(strArray[index + 4]);
-                        noteParam.id = int.Parse(strArray[index + 5]);
+                        int id = int.Parse(strArray[index + 5]) - 1;
                         noteParam.connectionType = int.Parse(strArray[index + 6]);
                         // id に対応する一時保管リストにインデックスを記録
-                        // スライドノーツの終端まで記録できたら slideNotesData に追加し，初期化
-                        slideNoteIndexList[noteParam.id].Add(notesData.Count + newList.Count);
+                        // スライドノーツの終端まで記録できたら slideNoteIndexList に追加し，初期化
+                        slideNoteIndexTmpList[id].Add(notesData.Count + newList.Count);
                         if (noteParam.connectionType == 0)
                         {
-                            slideNotesData.Add(slideNoteIndexList[noteParam.id]);
-                            slideNoteIndexList[noteParam.id] = new List<int>();
+                            slideNoteIndexList.Add(slideNoteIndexTmpList[id]);
+                            slideNoteIndexTmpList[id] = new List<int>();
                         }
                         newList.Add(noteParam);
                         totalNotesNum++;
@@ -280,7 +303,9 @@ namespace Lyrid.GameScene.Charts
             return newList;
         }
 
-        // 楽譜情報を log に表示させるメソッド
+        /// <summary>
+        /// 楽譜情報を log に表示させるメソッド
+        /// </summary>
         public void DisplayInfo()
         {
             string info = "";

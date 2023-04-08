@@ -4,7 +4,9 @@ using UnityEngine;
 
 namespace Lyrid.GameScene
 {
-    // GameScene の定数を管理するクラス
+    /// <summary>
+    /// GameScene の定数を管理するクラス
+    /// </summary>
     public static class GameSceneConsts
     {
         // 判定時間
@@ -13,7 +15,13 @@ namespace Lyrid.GameScene
         public const float GOOD_RANGE = 0.1f;
         public const float BAD_RANGE = 0.2f;
 
-        // タップノーツの色
-        public static readonly Color32 TAP_NOTE_COLOR = new Color32(0, 0, 0, 0);
+        // ノーツの色
+        public static readonly Color32 TAP_NOTE_COLOR = new Color32(80, 255, 255, 255);
+        public static readonly Color32 SWIPE_NOTE_COLOR = new Color32(230, 255, 80, 255);
+        public static readonly Color32 FLICK_NOTE_COLOR = new Color32(210, 80, 255, 255);
+        public static readonly Color32 SLIDE_NOTE_COLOR = new Color32(80, 100, 255, 255);
+
+        // レーンの高さ
+        public const float LANE_HEIGHT = 20.0f;
     }
 }

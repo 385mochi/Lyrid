@@ -6,16 +6,23 @@ using Lyrid.GameScene.Charts;
 namespace Lyrid.GameScene.Notes
 {
     /// <summary>
-    /// タップノートのクラス
+    /// フリックノートのクラス
     /// </summary>
-    public class TapNote : Note
+    public class FlickNote : Note
     {
+        #region Field
+        /// <summary> 初回タッチされたかどうか </summary>
+        private bool touched = false;
+        /// <summary>  初回タッチの判定 </summary>
+        private JudgementType firstJudgementType = JudgementType.None;
+        #endregion
+
         #region Constructor
         /// <param name="generatedTime"> 生成時間 </param>
         /// <param name="judgementTime"> 判定時間 </param>
-        /// <param name="noteParam"> ノートの種類 </param>
+        /// <param name="noteParam"> ノートのパラメータ </param>
         /// <param name="isSlideNote"> スライドノートかどうか </param>
-        public TapNote(float generatedTime, float judgementTime, NoteParam noteParam, bool isSlideNote)
+        public FlickNote(float generatedTime, float judgementTime, NoteParam noteParam, bool isSlideNote)
             : base(generatedTime, judgementTime, noteParam, isSlideNote)
         {}
         #endregion
@@ -46,8 +53,8 @@ namespace Lyrid.GameScene.Notes
         /// </summary>
         /// <param name="time"> 現在の時間 </param>
         /// <param name="touchType"> タッチの種類 </param>
-        /// <param name="posX"> タッチ位置の x 座標 </param>
-        /// <returns></returns>
+        /// <param name="posX"> タッチの x 座標 </param>
+        /// <returns> 判定の種類 </returns>
         public override JudgementType Judge(float time, int touchType, float posX)
         {
             // 差分時間
@@ -62,14 +69,23 @@ namespace Lyrid.GameScene.Notes
             // None であればそのまま返す
             if (judgementType == JudgementType.None)
             {
-               return JudgementType.None;
+                return JudgementType.None;
             }
-            // タッチ開始かつノートの範囲内であれば判定済みとしてその判定を返す
-            if (touchType == 1 && Touched(posX))
+            // タッチされていない状態で、タッチ開始かつノートの範囲内であればタッチされた状態にする
+            // また、今回の判定を記録しておく
+            if (!touched && touchType == 1 && Touched(posX))
+            {
+                Remove();
+                touched = true;
+                firstJudgementType = judgementType;
+                return JudgementType.None;
+            }
+            // 既にタッチされた状態で、タッチが移動中であれば初回タッチ時の判定を返す
+            if (touched && touchType == 2)
             {
                 Remove();
                 judged = true;
-                return judgementType;
+                return firstJudgementType;
             }
             return JudgementType.None;
         }

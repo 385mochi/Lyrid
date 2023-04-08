@@ -6,19 +6,25 @@ using Lyrid.GameScene.Input;
 
 namespace Lyrid.GameScene.Notes
 {
-    // ノーツ判定を管理するクラス
+    /// <summary>
+    /// ノーツ判定を管理するクラス
+    /// </summary>
     public class JudgementManager
     {
         #region Field
-        // 判定対象のリスト
-        private List<IJudgeable> judgementTargets = new List<IJudgeable>();
-        // オートプレイかどうか
+        /// <summary> 判定対象のリスト </summary>
+        private List<IJudgeable> targets = new List<IJudgeable>();
+        /// <summary> 判定済みの対象のインデックスのリスト </summary>
+        private List<int> judgedTargetIndexList;
+        /// <summary> オートプレイかどうか </summary>
         private bool autoPlay;
-        // TouchInputManager のインスタンス
+        /// <summary> TouchInputManager のインスタンス </summary>
         private TouchInputManager touchInputManager;
         #endregion
 
         #region Constructor
+        /// <param name="touchInputManager"> TouchInputManager のインスタンス </param>
+        /// <param name="autoPlay"> オートプレイかどうか </param>
         public JudgementManager(TouchInputManager touchInputManager, bool autoPlay)
         {
             this.touchInputManager = touchInputManager;
@@ -27,80 +33,119 @@ namespace Lyrid.GameScene.Notes
         #endregion
 
         #region Methods
-        // GameSceneManager からフレームごとに呼び出されるメソッド
+        /// <summary>
+        /// GameSceneManager からフレーム毎に呼び出されるメソッド
+        /// </summary>
+        /// <param name="time"> 現在の時間 </param>
         public void ManagedUpdate(float time)
         {
             Judge(time);
         }
 
-        // 判定対象を追加するメソッド
+        /// <summary>
+        /// 判定対象を追加するメソッド
+        /// </summary>
+        /// <param name="target"> 判定対象 </param>
         public void AddTarget(IJudgeable target)
         {
-            judgementTargets.Add(target);
+            targets.Add(target);
         }
 
-        // 判定するメソッド
+        /// <summary>
+        /// 判定を追加するメソッド
+        /// </summary>
+        /// <param name="type"> 判定の種類 </param>
+        public void AddJudgement(JudgementType type)
+        {
+        }
+
+        /// <summary>
+        /// 判定するメソッド
+        /// </summary>
+        /// <param name="time"> 現在の時間 </param>
         private void Judge(float time)
         {
+            // 判定済みリストを初期化
+            judgedTargetIndexList = new List<int>(10);
             // オートプレイの場合
             if (autoPlay)
             {
-                for (int i = judgementTargets.Count - 1; i >= 0; i--)
+                for (int i = 0; i < targets.Count; i--)
                 {
-                    Note target = (Note)judgementTargets[i];
-                    // 判定時間になったら Perfect 判定とし、対象を削除
-                    if (target.judgementTime - 0.008f <= time)
+                    if (targets[i] is SlideNote)
                     {
-                        target.judged = true;
-                        judgementTargets.RemoveAt(i);
-                        target.Remove();
+                        continue;
+                    }
+                    Note note = (Note)targets[i];
+                    // 判定時間になったら Perfect 判定とする
+                    if (note.judgementTime - 0.008f <= time)
+                    {
+                        note.judged = true;
                     }
                 }
             }
             // 通常プレイの場合
             else
             {
+                IReadOnlyList<int> touchTypeList = touchInputManager.touchTypeList;
+                IReadOnlyList<float> posXList = touchInputManager.posXList;
                 // 各 Touch についてノートを判定
-                List<int> touchTypeList = touchInputManager.touchTypeList;
-                List<float> posXList = touchInputManager.posXList;
                 for (int i = 0; i < touchTypeList.Count; i++)
                 {
                     int touchType = touchTypeList[i];
                     float posX = posXList[i];
                     // 判定対象リストを前側からチェック
-                    for (int j = 0; j < judgementTargets.Count; j++)
+                    for (int j = 0; j < targets.Count; j++)
                     {
-                        Note target = (Note)judgementTargets[j];
+                        IJudgeable target = targets[j];
                         JudgementType judgementType = target.Judge(time, touchType, posX);
-                        // 判定が None でなければそれを判定とする
-                        if (!target.judged && judgementType != JudgementType.None)
-                        {
-                            target.judged = true;
-                            Debug.Log(judgementType.ToString());
-                            break;
-                        }
-                        else
+                        // 判定が None であれば無視
+                        if (judgementType == JudgementType.None)
                         {
                             continue;
                         }
+                        // 判定が Judged であれば判定済みリストに追加する
+                        else if (judgementType == JudgementType.Judged)
+                        {
+                            judgedTargetIndexList.Add(i);
+                            continue;
+                        }
+                        // そのほかの場合はそれを判定とする
+                        else
+                        {
+                            Debug.Log(judgementType.ToString());
+                            break;
+                        }
                     }
                 }
-                // Miss 対象またはすでに判定済みのノートがあれば削除
-                for (int i = judgementTargets.Count - 1; i >= 0; i--)
+                // タッチされていないときは、存在するスライドノートのコンボを切る
+                if (touchTypeList.Count == 0)
                 {
-                    Note target = (Note)judgementTargets[i];
-                    JudgementType judgementType = target.Judge(time, 0, 100);
-                    if (judgementType == JudgementType.Miss)
+                    // 判定対象リストを前側からチェック
+                    for (int j = 0; j < targets.Count; j++)
                     {
-                        target.judged = true;
-                        Debug.Log(judgementType.ToString());
-                    }
-                    if (target.judged)
-                    {
-                        judgementTargets.RemoveAt(i);
-                        target.Remove();
+                        IJudgeable target = targets[j];
+                        if (target is SlideNote)
+                        {
+                            JudgementType judgementType = target.Judge(time, 0, 100);
+                            // 判定が None であれば無視
+                            if (judgementType == JudgementType.None)
+                            {
+                                continue;
+                            }
+                            // そのほかの場合はそれを判定とする
+                            else
+                            {
+                                Debug.Log(judgementType.ToString());
+                            }
+                        }
                     }
                 }
+            }
+            // すでに判定済みのノートを削除
+            for (int i = judgedTargetIndexList.Count - 1; i >= 0; i--)
+            {
+                targets.RemoveAt(judgedTargetIndexList[i]);
             }
         }
         #endregion

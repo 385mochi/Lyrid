@@ -1,46 +1,47 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
 using Lyrid.GameScene.Charts;
 
 namespace Lyrid.GameScene.Notes
 {
-    // ノーツ移動を管理するクラス
+    /// <summary>
+    /// ノーツ移動を管理するクラス
+    /// </summary>
     public class MovementManager
     {
         #region Field
-        // 移動対象のリスト
-        private List<IMovable> movingTargets = new List<IMovable>();
+        /// <summary> 移動対象のリスト </summary>
+        private List<IMovable> targets = new List<IMovable>();
         #endregion
 
         #region Constructor
-        public MovementManager()
-        {
-        }
+        public MovementManager(){}
         #endregion
 
         #region Methods
-        // GameSceneManager からフレームごとに呼び出されるメソッド
+        /// <summary>
+        /// GameSceneManager からフレーム毎に呼び出されるメソッド
+        /// </summary>
+        /// <param name="time"> 現在の時間 </param>
         public void ManagedUpdate(float time)
         {
-            for (int i = movingTargets.Count - 1; i >= 0; i--)
+            for (int i = targets.Count - 1; i >= 0; i--)
             {
-                Note target = (Note)movingTargets[i];
-                // 判定されていなければ移動、されていれば対象を削除する
-                if (!target.judged)
+                if (!targets[i].Move(time))
                 {
-                    target.Move(time);
-                }
-                else
-                {
-                    movingTargets.RemoveAt(i);
+                    targets.RemoveAt(i);
                 }
             }
         }
 
-        // 移動対象を追加する
+        /// <summary>
+        /// 移動対象を追加するメソッド
+        /// </summary>
+        /// <param name="target"> 移動対象 </param>
         public void AddTarget(IMovable target)
         {
-            movingTargets.Add(target);
+            targets.Add(target);
         }
         #endregion
     }

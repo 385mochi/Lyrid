@@ -3,11 +3,11 @@ using System.Collections.Generic;
 
 namespace Lyrid.GameScene.Notes
 {
-    // 移動のためのインターフェース
+    /// <summary>
+    /// 移動のためのインターフェース
+    /// </summary>
     public interface IMovable
     {
-        #region Methods
-        void Move(float rate);
-        #endregion
+        bool Move(float time);
     }
 }

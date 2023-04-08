@@ -9,34 +9,35 @@ using Lyrid.GameScene.Input;
 
 namespace Lyrid.GameScene
 {
-    // GameScene を管理するクラス
+    /// <summary>
+    /// GameScene を管理するクラス
+    /// </summary>
     public class GameSceneManager : MonoBehaviour
     {
         #region Field
-        // オートプレイかどうか
+        /// <summary> オートプレイかどうか </summary>
         [SerializeField] bool audioPlay;
-        // 譜面の csv ファイル
+        /// <summary> 譜面の csv ファイル </summary>
         [SerializeField] private TextAsset testCsvFile;
-        // 音源
+        /// <summary> 音源の AudioSource </summary>
         [SerializeField] private AudioSource music;
-        // 譜面のインスタンス
+        /// <summary> 譜面のインスタンス </summary>
         private Chart chart;
-        // LanesManager のインスタンス
+        /// <summary> LanesManager のインスタンス </summary>
         private LanesManager lanesManager;
-        // AudioManager のインスタンス
+        /// <summary> AudioManager のインスタンス </summary>
         private AudioManager audioManager;
-        // TouchInputManager のインスタンス
+        /// <summary> TouchInputManager のインスタンス </summary>
         private TouchInputManager touchInputManager;
-        // MovementManager のインスタンス
+        /// <summary> MovementManager のインスタンス </summary>
         private MovementManager movementManager;
-        // JudgementManager のインスタンス
+        /// <summary> JudgementManager のインスタンス </summary>
         private JudgementManager judgementManager;
-        // NotesManager のインスタンス
+        /// <summary> NotesManager のインスタンス </summary>
         private NotesManager notesManager;
         #endregion
 
         #region Methods
-        // 最初のフレームで呼ばれるメソッド
         void Start()
         {
             // 60fps に設定
@@ -44,12 +45,11 @@ namespace Lyrid.GameScene
             Application.targetFrameRate = 60;
             // 譜面を生成
             chart = new Chart(testCsvFile);
-            chart.DisplayInfo();
             // LanesManager のインスタンスを取得し、レーンを生成する
             lanesManager = GameObject.Find("Lanes").GetComponent<LanesManager>();
             lanesManager.SetLanes(chart.maxLaneNum, chart.initLaneNum, chart.laneWidth, chart.setLaneVisible);
             // AudioManager のインスタンスを生成
-            audioManager = new AudioManager(music);
+            audioManager = new AudioManager(music, -0.5f);
             // TouchInputManager のインスタンスを生成
             touchInputManager = new TouchInputManager();
             // MovementManager のインスタンスを生成
@@ -60,17 +60,16 @@ namespace Lyrid.GameScene
             notesManager = new NotesManager(chart, movementManager, judgementManager);
         }
 
-        // フレーム毎に呼ばれるメソッド
         void Update()
         {
             // AudioManager を Update し、現在の再生時間を取得
             audioManager.ManagedUpdate();
-            float time = audioManager.GetTime();
+            float time = audioManager.time;
             // 各インスタンスを Update
             touchInputManager.ManagedUpdate();
-            movementManager.ManagedUpdate(time);
             judgementManager.ManagedUpdate(time);
             notesManager.ManagedUpdate(time);
+            movementManager.ManagedUpdate(time);
         }
         #endregion
     }

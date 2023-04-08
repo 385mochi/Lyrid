@@ -2,45 +2,154 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Lyrid.GameScene.Charts;
+using Lyrid.GameScene.Lanes;
+using static Lyrid.GameScene.GameSceneConsts;
 
 namespace Lyrid.GameScene.Notes
 {
-    // ノートの View クラス
+    /// <summary>
+    /// ノートの View クラス
+    /// </summary>
     public class NoteView : MonoBehaviour
     {
         #region Field
-        // レーンの高さ
-        [SerializeField] private float laneHeight;
-        // 初期座標
-        private Vector3 initPos;
-        // transform キャッシュ
+        /// <summary> ノートの色 </summary>
+        [SerializeField] private SpriteRenderer noteColor;
+        /// <summary> NoteFrame オブジェクト </summary>
+        [SerializeField] private GameObject noteFrameObj;
+        /// <summary> NoteColor オブジェクト </summary>
+        [SerializeField] private GameObject noteColorObj;
+        /// <summary> 判定の猶予座標 </summary>
+        private float margin = 0.5f;
+        /// <summary> 初期 z 座標 </summary>
+        private float initPosZ;
+        /// <summary> transform キャッシュ </summary>
         private Transform tfCache;
+        /// <summary> レーンに追従するかどうか </summary>
+        private bool followLane = true;
+        /// <summary> 追従するレーンの transform </summary>
+        private Transform laneTf;
         #endregion
 
         #region Methods
-        // 状態をリセットするメソッド
-        public void Reset(NoteParam noteParam)
+        /// <summary>
+        /// 状態を初期化するメソッド
+        /// </summary>
+        /// <param name="generatedTime"> 生成時間 </param>
+        /// <param name="judgementTime"> 判定時間 </param>
+        /// <param name="noteParam"> ノートのパラメータ </param>
+        /// <param name="isSlideNote"> スライドノートかどうか </param>
+        public void Init(float generatedTime, float judgementTime, NoteParam noteParam, bool isSlideNote)
         {
+            // レーンを追従するか判定し、追従する場合はレーンの transform を取得
+            if (noteParam.laneNum <= 0)
+            {
+                followLane = false;
+            }
+            else
+            {
+                laneTf = GameObject.FindWithTag("Lanes").GetComponent<LanesManager>().laneTransforms[noteParam.laneNum - 1];
+            }
+            // 初期位置を設定
             tfCache = gameObject.transform;
-            tfCache.localPosition = new Vector3(0, 0, laneHeight);
+            initPosZ = LANE_HEIGHT;
+            if (noteParam.var_4 > 0)
+            {
+                initPosZ = LANE_HEIGHT * (judgementTime - generatedTime) / (noteParam.var_4 - generatedTime);
+            }
+            Move(1.0f);
+            // 色を設定
+            if (isSlideNote && noteParam.type != ElementType.None)
+            {
+                SetColor(ElementType.Slide);
+            }
+            else
+            {
+                SetColor(noteParam.type);
+            }
         }
-        // ノートを移動させるメソッド
+
+        /// <summary>
+        /// ノートを移動させるメソッド
+        /// </summary>
+        /// <param name="rate"> 移動させる割合 </param>
         public void Move(float rate)
         {
-            tfCache.localPosition = new Vector3(0, 0, laneHeight * rate);
+            float newPosZ = initPosZ * rate;
+            if (followLane)
+            {
+                tfCache.localPosition = new Vector3(laneTf.position.x, 0, newPosZ);
+            }
+            else
+            {
+                Vector3 pos = tfCache.localPosition;
+                pos.z = newPosZ;
+                tfCache.localPosition = pos;
+            }
         }
-        // View を非表示にするメソッド
-        public void Remove()
+
+        /// <summary>
+        /// ノートの x 座標のみを更新させるメソッド
+        /// </summary>
+        /// <param name="posX"> 更新後の x 座標 </param>
+        public void MoveX(float posX)
         {
-            gameObject.SetActive(false);
+            Vector3 pos = tfCache.localPosition;
+            pos.x = posX;
+            tfCache.localPosition = pos;
         }
-        // posX がノートの範囲内かどうか判定するメソッド
-        public bool Touched(float posX, float margin)
+
+        /// <summary>
+        /// posX がノートの範囲内かどうか判定するメソッド
+        /// </summary>
+        /// <param name="posX"> 判定する x 座標 </param>
+        /// <returns> 範囲内かどうか </returns>
+        public bool Touched(float posX)
         {
             return (
                 tfCache.position.x - (tfCache.lossyScale.x / 2.0f) - margin <= posX &&
                 tfCache.position.x + (tfCache.lossyScale.x / 2.0f) + margin >= posX
             );
+        }
+
+        /// <summary>
+        /// ノートの色を設定するメソッド
+        /// </summary>
+        /// <param name="type"> 要素の種類 </param>
+        public void SetColor(ElementType type)
+        {
+            noteFrameObj.SetActive(true);
+            noteColorObj.SetActive(true);
+            switch (type)
+            {
+                case ElementType.Tap:
+                    noteColor.color = TAP_NOTE_COLOR;
+                    break;
+                case ElementType.Swipe:
+                    noteColor.color = SWIPE_NOTE_COLOR;
+                    break;
+                case ElementType.Flick:
+                    noteColor.color = FLICK_NOTE_COLOR;
+                    break;
+                case ElementType.Slide:
+                    noteColor.color = SLIDE_NOTE_COLOR;
+                    break;
+                case ElementType.None:
+                    noteFrameObj.SetActive(false);
+                    noteColorObj.SetActive(false);
+                    break;
+                default:
+                    Debug.Assert(false);
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// View を非表示にするメソッド
+        /// </summary>
+        public void Remove()
+        {
+            gameObject.SetActive(false);
         }
         #endregion
     }

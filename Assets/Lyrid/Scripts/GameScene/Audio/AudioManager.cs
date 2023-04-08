@@ -5,36 +5,46 @@ using Lyrid.GameScene.Charts;
 
 namespace Lyrid.GameScene.Audio
 {
-    // GameScene の Audio を管理するクラス
+    /// <summary>
+    /// GameScene の Audio を管理するクラス
+    /// </summary>
     public class AudioManager
     {
         #region Field
-        // 楽曲の AudioSource
+        /// <summary> 楽曲の AudioSource </summary>
         private AudioSource music;
-        // 現在の再生時間
-        private float time = -5.0f;
-        // 再生中かどうか
+        /// <summary> 再生中かどうか </summary>
         private bool nowPlaying = false;
-        // 実際の楽曲再生位置を取得する間隔
+        /// <summary> 実際の楽曲再生位置を取得する間隔 </summary>
         private int samplingFlame = 5;
-        // 'samplingFlame' のためのカウンタ
+        /// <summary> samplingFlame のためのカウンタ </summary>
         private int samplingFlameCounter = 0;
         #endregion
 
+        #region Property
+        /// <summary> 現在の再生時間 </summary>
+        public float time { get; private set; }
+        #endregion
+
         #region Constructor
-        public AudioManager(AudioSource music)
+        /// <param name="music"> 楽曲の AudioSource </param>
+        /// <param name="initTime"> 時間の初期値 </param>
+        public AudioManager(AudioSource music, float initTime)
         {
             this.music = music;
+            this.time = initTime;
         }
         #endregion
 
         #region Methods
-        // GameSceneManager からフレームごとに呼び出されるメソッド
+        /// <summary>
+        /// GameSceneManager からフレーム毎に呼び出されるメソッド
+        /// </summary>
         public void ManagedUpdate()
         {
             // deltaTime を取得
             float deltaTime = Time.deltaTime;
-            // time が 0 になるまですすめる
+            // time が 0 になるまで進める
             if (!nowPlaying)
             {
                 time += deltaTime;
@@ -46,7 +56,7 @@ namespace Lyrid.GameScene.Audio
             }
             else
             {
-                // samplingFrame ごとに実際の楽曲時間をサンプリングする
+                // samplingFrame 毎に実際の楽曲時間をサンプリングする
                 if (samplingFlameCounter++ >= samplingFlame)
                 {
                     samplingFlameCounter = 0;
@@ -57,12 +67,6 @@ namespace Lyrid.GameScene.Audio
                     time += deltaTime;
                 }
             }
-        }
-
-        // 現在の再生時間を返すメソッド
-        public float GetTime()
-        {
-            return time;
         }
         #endregion
     }
