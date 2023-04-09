@@ -55,6 +55,17 @@ namespace Lyrid.GameScene.Input
 
         #region Methods
         /// <summary>
+        /// 初期化メソッド
+        /// </summary>
+        public void Reset()
+        {
+            // レーンの Transform のリストを取得する
+            laneTransforms = GameObject.FindWithTag("Lanes").GetComponent<LanesManager>().laneTransforms;
+            // Lane のリストを取得する
+            lanes = GameObject.FindWithTag("Lanes").GetComponent<LanesManager>().lanes;
+        }
+
+        /// <summary>
         /// GameSceneManager からフレーム毎に呼び出されるメソッド
         /// </summary>
         public void ManagedUpdate()

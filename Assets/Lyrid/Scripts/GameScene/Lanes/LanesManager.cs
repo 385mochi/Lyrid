@@ -35,7 +35,7 @@ namespace Lyrid.GameScene.Lanes
         /// <summary>
         /// レーンを初期状態にするメソッド
         /// </summary>
-        public void Init()
+        public void Reset()
         {
             if (laneObjects != null)
             {
@@ -105,48 +105,6 @@ namespace Lyrid.GameScene.Lanes
                 );
                 posX += laneWidth;
             }
-        }
-
-        //TODO: Scale を実装
-        // index 番目のレーンを幅 width へ 時間 t で変化させる
-        public void Scale(int index, float width, float t, int option, float delay) {
-            /*
-            if(option == 0) return;
-            iTween.EaseType easeType = iTween.EaseType.linear;
-            if(option == 2) easeType = iTween.EaseType.easeInSine;
-            if(option == 3) easeType = iTween.EaseType.easeOutSine;
-            if(option == 4) easeType = iTween.EaseType.easeInOutSine;
-            // width が 0 のときはアニメーション完了後不可視にする
-            if(width == 0)
-            {
-                iTween.ScaleTo(
-                    laneObjects[index],
-                    iTween.Hash("x", width,
-                    "time", t,
-                    "easetype", easeType,
-                    "delay", delay,
-                    "onstarttarget", gameObject,
-                    "onstartparams", index,
-                    "onstart", "SetVisibleTrue",
-                    "oncompletetarget", gameObject,
-                    "oncompleteparams", index,
-                    "oncomplete", "SetVisibleFalse")
-                );
-            }
-            else
-            {
-                iTween.ScaleTo(
-                    laneObjects[index],
-                    iTween.Hash("x", width,
-                    "time", t,
-                    "easetype", easeType,
-                    "delay", delay,
-                    "onstarttarget", gameObject,
-                    "onstartparams", index,
-                    "onstart", "SetVisibleTrue")
-                );
-            }
-            */
         }
         #endregion
     }

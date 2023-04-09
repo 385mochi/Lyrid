@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using DG.Tweening;
 using Lyrid.GameScene.Charts;
 using Lyrid.GameScene.Lanes;
 using static Lyrid.GameScene.GameSceneConsts;
@@ -24,14 +23,17 @@ namespace Lyrid.GameScene.Notes
         private float margin = 0.5f;
         /// <summary> 初期 z 座標 </summary>
         private float initPosZ;
-        /// <summary> ノートの幅 </summary>
-        private float width = 1.0f;
         /// <summary> transform キャッシュ </summary>
         private Transform tfCache;
         /// <summary> レーンに追従するかどうか </summary>
         private bool followLane = true;
         /// <summary> 追従するレーンの transform </summary>
         private Transform laneTf;
+        #endregion
+
+        #region Property
+        /// <summary> ノートの幅 </summary>
+        public float width { get; private set; }
         #endregion
 
         #region Methods

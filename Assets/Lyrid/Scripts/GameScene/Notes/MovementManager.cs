@@ -12,11 +12,14 @@ namespace Lyrid.GameScene.Notes
     {
         #region Field
         /// <summary> 移動対象のリスト </summary>
-        private List<IMovable> targets = new List<IMovable>();
+        private List<IMovable> targets;
         #endregion
 
         #region Constructor
-        public MovementManager(){}
+        public MovementManager()
+        {
+            targets = new List<IMovable>();
+        }
         #endregion
 
         #region Methods
@@ -33,6 +36,14 @@ namespace Lyrid.GameScene.Notes
                     targets.RemoveAt(i);
                 }
             }
+        }
+
+        /// <summary>
+        /// 状態をリセットするメソッド
+        /// </summary>
+        public void Reset()
+        {
+            targets = new List<IMovable>();
         }
 
         /// <summary>

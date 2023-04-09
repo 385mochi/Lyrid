@@ -73,6 +73,15 @@ namespace Lyrid.GameScene.Score
             // チェイン数を保持
             preChain = chain;
         }
+
+        /// <summary>
+        /// 状態をリセットするメソッド
+        /// </summary>
+        public void Reset()
+        {
+            preChain = 0;
+            chainText.text = "0";
+        }
         #endregion
     }
 }

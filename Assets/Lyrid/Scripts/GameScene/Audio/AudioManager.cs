@@ -19,6 +19,8 @@ namespace Lyrid.GameScene.Audio
         private int samplingFlame = 5;
         /// <summary> samplingFlame のためのカウンタ </summary>
         private int samplingFlameCounter = 0;
+        /// <summary> 時間の初期値 </summary>
+        private float initTime;
         #endregion
 
         #region Property
@@ -33,6 +35,7 @@ namespace Lyrid.GameScene.Audio
         {
             this.music = music;
             this.time = initTime;
+            this.initTime = initTime;
         }
         #endregion
 
@@ -67,6 +70,13 @@ namespace Lyrid.GameScene.Audio
                     time += deltaTime;
                 }
             }
+        }
+
+        public void Reset()
+        {
+            music.Stop();
+            nowPlaying = false;
+            time = initTime;
         }
         #endregion
     }

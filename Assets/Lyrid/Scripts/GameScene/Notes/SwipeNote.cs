@@ -60,12 +60,14 @@ namespace Lyrid.GameScene.Notes
                 return judgementType;
             }
             // タッチ開始かつノートの範囲内であれば判定する
+            /*
             if (touchType == 1 && Touched(posX))
             {
                 Remove();
                 judged = true;
                 return judgementType;
             }
+            */
             return JudgementType.None;
         }
         #endregion

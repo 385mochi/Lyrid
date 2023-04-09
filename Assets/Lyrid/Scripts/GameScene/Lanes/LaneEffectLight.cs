@@ -21,7 +21,9 @@ public class LaneEffectLight : MonoBehaviour
     /// <summary>
     /// レーンを光らせるメソッド
     /// </summary>
-    public void LightUp(ElementType type)
+    /// <param name="type"> 要素の種類 </param>
+    /// <param name="width"> レーンの幅を 1 としたときの幅 </param>
+    public void LightUp(ElementType type, float width)
     {
         if (tweener != null)
         {
@@ -46,7 +48,10 @@ public class LaneEffectLight : MonoBehaviour
                 color = new Color32(0, 0, 0, 0);
                 break;
         }
-        color.a = 128;
+        color.a = 200;
+        Vector3 scale = gameObject.transform.localScale;
+        scale.x = width;
+        gameObject.transform.localScale = scale;
         laneEffectLight.color = color;
         tweener = DOTween.ToAlpha(
             () => laneEffectLight.color,

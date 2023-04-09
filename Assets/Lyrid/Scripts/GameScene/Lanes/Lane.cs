@@ -18,6 +18,10 @@ namespace Lyrid.GameScene.Lanes
         [SerializeField] private LaneLight laneLight;
         /// <summary> レーンのエフェクトのオブジェクト </summary>
         [SerializeField] private LaneEffectLight laneEffectLight;
+        /// <summary> DOTween のための Tweener インスタンス (Move 用) </summary>
+        private Tweener tweenerMove;
+        /// <summary> DOTween のための Tweener インスタンス (Scale 用) </summary>
+        private Tweener tweenerScale;
         #endregion
 
         #region Methods
@@ -42,9 +46,10 @@ namespace Lyrid.GameScene.Lanes
         /// レーンのエフェクトを光らせるメソッド
         /// </summary>
         /// <param name="type"> 判定したノートの種類 </param>
-        public void EffectLightUp(ElementType type)
+        /// <param name="width"> レーン幅を 1 としたときの幅 </param>
+        public void EffectLightUp(ElementType type, float width)
         {
-            laneEffectLight.LightUp(type);
+            laneEffectLight.LightUp(type, width);
         }
 
         /// <summary>
@@ -58,7 +63,14 @@ namespace Lyrid.GameScene.Lanes
         {
             if (option > 0)
             {
-                gameObject.transform.DOMoveX(posX, t).SetDelay(delay).SetEase(GetEaseType(option));
+                if (tweenerMove != null)
+                {
+                    tweenerMove.Kill();
+                }
+                tweenerMove = gameObject.transform.DOMoveX(posX, t)
+                .SetDelay(delay)
+                .SetEase(GetEaseType(option))
+                .OnComplete(() => {tweenerMove = null;});
             }
         }
 
@@ -73,7 +85,14 @@ namespace Lyrid.GameScene.Lanes
         {
             if (option > 0)
             {
-                gameObject.transform.DOScaleX(scale, t).SetDelay(delay).SetEase(GetEaseType(option));
+                if (tweenerScale != null)
+                {
+                    tweenerScale.Kill();
+                }
+                gameObject.transform.DOScaleX(scale, t)
+                .SetDelay(delay)
+                .SetEase(GetEaseType(option))
+                .OnComplete(() => {tweenerScale = null;});
             }
         }
         #endregion

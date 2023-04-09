@@ -98,6 +98,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   laneEffectLight: {fileID: 4429906485131773230}
+  lane: {fileID: 1180544799695888069}
 --- !u!1 &1180544799423229823
 GameObject:
   m_ObjectHideFlags: 0

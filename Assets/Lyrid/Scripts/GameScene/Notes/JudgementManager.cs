@@ -15,7 +15,7 @@ namespace Lyrid.GameScene.Notes
     {
         #region Field
         /// <summary> 判定対象のリスト </summary>
-        private List<IJudgeable> targets = new List<IJudgeable>();
+        private List<IJudgeable> targets;
         /// <summary> 判定済みの対象のインデックスのリスト </summary>
         private List<int> judgedTargetIndexList;
         /// <summary> オートプレイかどうか </summary>
@@ -37,6 +37,7 @@ namespace Lyrid.GameScene.Notes
             this.touchInputManager = touchInputManager;
             this.autoPlay = autoPlay;
             lanesManager = GameObject.Find("Lanes").GetComponent<LanesManager>();
+            targets = new List<IJudgeable>();
         }
         #endregion
 
@@ -48,6 +49,14 @@ namespace Lyrid.GameScene.Notes
         public void ManagedUpdate(float time)
         {
             Judge(time);
+        }
+
+        /// <summary>
+        /// 状態をリセットするメソッド
+        /// </summary>
+        public void Reset()
+        {
+            targets = new List<IJudgeable>();
         }
 
         /// <summary>
@@ -90,7 +99,7 @@ namespace Lyrid.GameScene.Notes
                     if (note.judgementTime - 0.008f <= time)
                     {
                         note.judged = true;
-                        lanesManager.lanes[note.noteParam.laneNum].EffectLightUp(note.noteParam.type);
+                        lanesManager.lanes[note.noteParam.laneNum].EffectLightUp(note.noteParam.type, note.view.width);
                         scoreManager.AddScore(JudgementType.Perfect);
                     }
                 }
@@ -126,8 +135,8 @@ namespace Lyrid.GameScene.Notes
                         {
                             if (target is Note)
                             {
-                                Note note = (Note)targets[i];
-                                lanesManager.lanes[note.noteParam.laneNum].EffectLightUp(note.noteParam.type);
+                                Note note = (Note)target;
+                                lanesManager.lanes[note.noteParam.laneNum].EffectLightUp(note.noteParam.type, note.view.width);
                             }
                             scoreManager.AddScore(judgementType);
                             break;

@@ -16,19 +16,19 @@ namespace Lyrid.GameScene.Notes
         [SerializeField] private GameObject prefabObj;
         /// <summary> 初期オブジェクト数 </summary>
         [SerializeField] int initNum;
+
         #endregion
 
         #region Methods
         void Start()
         {
-            Init(initNum);
+            Reset();
         }
 
         /// <summary>
         /// プールを初期化する
         /// </summary>
-        /// <param name="size"> 初期化数 </param>
-        public void Init(int size)
+        public void Reset()
         {
             // プールが存在するときは含まれるオブジェクトをすべて破壊
             if (pool != null)
@@ -40,7 +40,7 @@ namespace Lyrid.GameScene.Notes
             }
             // プールを生成して指定された個数のオブジェクトを追加する
             pool = new List<GameObject>();
-            for(int i = 0; i < size; i++)
+            for(int i = 0; i < initNum; i++)
             {
                 GameObject obj = Instantiate(prefabObj, transform);
                 obj.SetActive(false);

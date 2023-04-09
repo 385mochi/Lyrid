@@ -66,6 +66,11 @@ namespace Lyrid.GameScene.Score
                     break;
             }
         }
+
+        public void Reset()
+        {
+            judgementText.text = "";
+        }
         #endregion
     }
 }

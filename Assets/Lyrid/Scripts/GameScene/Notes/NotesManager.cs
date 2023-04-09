@@ -14,9 +14,9 @@ namespace Lyrid.GameScene.Notes
     {
         #region Field
         /// <summary> 生成時間のリストのインデックス </summary>
-        private int timeDataIndex = 0;
+        private int timeDataIndex;
         /// <summary> スライドノートのリストのインデックス </summary>
-        private int slideNoteIndex = 0;
+        private int slideNoteIndex;
         /// <summary> ノートの落下速度 </summary>
         private float speed;
         /// <summary> レーンの高さ </summary>
@@ -38,7 +38,9 @@ namespace Lyrid.GameScene.Notes
         public NotesManager(Chart chart, MovementManager movementManager, JudgementManager judgementManager)
         {
             this.chart = chart;
-            this.speed = chart.initSpeed;
+            speed = chart.initSpeed;
+            timeDataIndex = 0;
+            slideNoteIndex = 0;
             this.movementManager = movementManager;
             this.judgementManager = judgementManager;
             lanesManager = GameObject.Find("Lanes").GetComponent<LanesManager>();
@@ -61,6 +63,16 @@ namespace Lyrid.GameScene.Notes
                 GenerateNote(time, timeDataIndex);
                 timeDataIndex++;
             }
+        }
+
+        /// <summary>
+        /// 状態をリセットするメソッド
+        /// </summary>
+        public void Reset()
+        {
+            speed = chart.initSpeed;
+            timeDataIndex = 0;
+            slideNoteIndex = 0;
         }
 
         /// <summary>

@@ -17,7 +17,7 @@ namespace Lyrid.GameScene.Score
         /// <summary> 現在のチェイン数 </summary>
         private int chain;
         /// <summary> 全てパーフェクト判定かどうか </summary>
-        private bool allPerfect = true;
+        private bool allPerfect;
         /// <summary> ノート判定による得点率の計算用係数 </summary>
         private float noteJudgementRateCoeff;
         /// <summary> チェインによる得点率の計算用係数 </summary>
@@ -42,6 +42,7 @@ namespace Lyrid.GameScene.Score
             this.scoreTargetNum = scoreTargetNum;
             score = 0;
             chain = 0;
+            allPerfect = true;
             // 100000 / 判定対象の数
             noteJudgementRateCoeff = 900000.0f / scoreTargetNum;
             // 900000 / ((判定対象の数 - 1) * 判定対象の数 / 2) を計算
@@ -50,12 +51,22 @@ namespace Lyrid.GameScene.Score
             scoreView = GameObject.Find("ScoreText").GetComponent<ScoreView>();
             chainView = GameObject.Find("ChainText").GetComponent<ChainView>();
             judgementView = GameObject.Find("JudgementText").GetComponent<JudgementView>();
-            Debug.Log(judgementView);
-
         }
         #endregion
 
         #region Methods
+        /// <summary>
+        /// 状態をリセットするメソッド
+        /// </summary>
+        public void Reset()
+        {
+            score = 0;
+            chain = 0;
+            allPerfect = true;
+            scoreView.Reset();
+            chainView.Reset();
+            judgementView.Reset();
+        }
         /// <summary>
         /// スコアを加算するメソッド
         /// </summary>

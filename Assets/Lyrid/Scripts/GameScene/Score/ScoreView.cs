@@ -36,6 +36,14 @@ namespace Lyrid.GameScene.Score
                 0.2f                  // 演出時間
             ).OnComplete(() => {tweener = null;});
         }
+
+        /// <summary>
+        /// 初期化メソッド
+        /// </summary>
+        public void Reset()
+        {
+            scoreText.text = "0000000";
+        }
         #endregion
     }
 }
