@@ -1,0 +1,37 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: CriData_Local
+  m_EditorClassIdentifier: 
+  m_GroupName: CriData_Local
+  m_Data:
+    m_SerializedData: []
+  m_GUID: ea52fd5d2ca10d449a660ae5a6c199d6
+  m_SerializeEntries:
+  - m_GUID: 3274ba3d1a6f2de41813d8dbf0dbfe35
+    m_Address: CriAddressables/lyrid.acf
+    m_ReadOnly: 1
+    m_SerializedLabels: []
+  - m_GUID: 3ed22d310f864d24b81b70ae06b6a560
+    m_Address: CriAddressables/dorekisei.acb
+    m_ReadOnly: 1
+    m_SerializedLabels: []
+  - m_GUID: c348f416aa9f2f54882d0ea913bbca4c
+    m_Address: CriAddressables/tapsound.acb
+    m_ReadOnly: 1
+    m_SerializedLabels: []
+  m_ReadOnly: 1
+  m_Settings: {fileID: 11400000, guid: 2bb42c8f1f72dae40a69d1fcf36ad966, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: 06bec1b6b8c43a34e86008fd480a5fac, type: 2}
+    - {fileID: 11400000, guid: 3bbbd9ce3941e64438935aa1383d2dd2, type: 2}

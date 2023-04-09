@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Lyrid.GameScene.Audio;
 using Lyrid.GameScene.Charts;
 using Lyrid.GameScene.Input;
 using Lyrid.GameScene.Lanes;
@@ -20,6 +21,8 @@ namespace Lyrid.GameScene.Notes
         private List<int> judgedTargetIndexList;
         /// <summary> オートプレイかどうか </summary>
         private bool autoPlay;
+        /// <summary> AudioManager のインスタンス </summary>
+        private AudioManager audioManager;
         /// <summary> ScoreManager のインスタンス </summary>
         private ScoreManager scoreManager;
         /// <summary> TouchInputManager のインスタンス </summary>
@@ -31,8 +34,9 @@ namespace Lyrid.GameScene.Notes
         #region Constructor
         /// <param name="touchInputManager"> TouchInputManager のインスタンス </param>
         /// <param name="autoPlay"> オートプレイかどうか </param>
-        public JudgementManager(ScoreManager scoreManager, TouchInputManager touchInputManager, bool autoPlay)
+        public JudgementManager(AudioManager audioManager, ScoreManager scoreManager, TouchInputManager touchInputManager, bool autoPlay)
         {
+            this.audioManager = audioManager;
             this.scoreManager = scoreManager;
             this.touchInputManager = touchInputManager;
             this.autoPlay = autoPlay;
@@ -98,6 +102,7 @@ namespace Lyrid.GameScene.Notes
                     // 判定時間になったら Perfect 判定とする
                     if (note.judgementTime - 0.008f <= time)
                     {
+                        audioManager.PlayTapSound();
                         note.judged = true;
                         lanesManager.lanes[note.noteParam.laneNum].EffectLightUp(note.noteParam.type, note.view.width);
                         scoreManager.AddScore(JudgementType.Perfect);
@@ -133,6 +138,7 @@ namespace Lyrid.GameScene.Notes
                         // そのほかの場合はそれを判定とする
                         else
                         {
+                            audioManager.PlayTapSound();
                             if (target is Note)
                             {
                                 Note note = (Note)target;

@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using CriWare;
+using CriWare.Assets;
 using DG.Tweening;
 using Lyrid.Common;
 using static Lyrid.Common.Easings;
@@ -32,6 +34,8 @@ namespace Lyrid.GameScene
         [SerializeField] private GameObject frontImageObj;
         /// <summary> ロード中のアイコン </summary>
         [SerializeField] private Image loadingIcon;
+        /// <summary> AssetLoader のインスタンス </summary>
+        private AssetLoader assetLoader;
         /// <summary> 譜面のインスタンス </summary>
         private Chart chart;
         /// <summary> LanesManager のインスタンス </summary>
@@ -48,11 +52,16 @@ namespace Lyrid.GameScene
         private ScoreManager scoreManager;
         /// <summary> NotesManager のインスタンス </summary>
         private NotesManager notesManager;
+        /// <summary> GameScene の状態を表す列挙型 </summary>
+        private enum Status { Start, Playing, End }
+        /// <summary> GameScene の状態 </summary>
+        private Status status;
         #endregion
 
         #region Methods
         void OnEnable()
         {
+            status = Status.Start;
             // 60fps に設定
             QualitySettings.vSyncCount = 0;
             Application.targetFrameRate = 60;
@@ -61,21 +70,29 @@ namespace Lyrid.GameScene
 
         void Update()
         {
-            // AudioManager を Update し、現在の再生時間を取得
-            audioManager.ManagedUpdate();
-            float time = audioManager.time;
-            // 各 Manager を Update
-            touchInputManager.ManagedUpdate();
-            notesManager.ManagedUpdate(time);
-            movementManager.ManagedUpdate(time);
-            judgementManager.ManagedUpdate(time);
+            if (status == Status.Playing)
+            {
+                // AudioManager を Update し、現在の再生時間を取得
+                audioManager.ManagedUpdate();
+                float time = audioManager.time;
+                // 各 Manager を Update
+                touchInputManager.ManagedUpdate();
+                notesManager.ManagedUpdate(time);
+                movementManager.ManagedUpdate(time);
+                judgementManager.ManagedUpdate(time);
+            }
         }
 
         /// <summary>
         /// 初期化メソッド
         /// </summary>
-        private void Init()
+        private async void Init()
         {
+            // 楽曲をロード
+            assetLoader = new AssetLoader();
+            CriAtomExAcb music = await assetLoader.LoadAudioAsync("dorekisei_audio");
+            CriAtomExAcb tapSound = await assetLoader.LoadAudioAsync("tapsound");
+
             // DOTween を初期化
             DOTween.Init();
 
@@ -87,12 +104,15 @@ namespace Lyrid.GameScene
             lanesManager.SetLanes(chart.maxLaneNum, chart.initLaneNum, chart.laneWidth, chart.setLaneVisible);
 
             // 各 Manager のインスタンスを生成
-            audioManager = new AudioManager(music, -2.0f);
+            audioManager = new AudioManager(music, tapSound, -2.0f);
             touchInputManager = new TouchInputManager();
             movementManager = new MovementManager();
             scoreManager = new ScoreManager(chart.totalJudgementTargetsNum);
-            judgementManager = new JudgementManager(scoreManager, touchInputManager, audioPlay);
+            judgementManager = new JudgementManager(audioManager, scoreManager, touchInputManager, audioPlay);
             notesManager = new NotesManager(chart, movementManager, judgementManager);
+
+            // 状態を更新
+            status = Status.Playing;
         }
 
         /// <summary>

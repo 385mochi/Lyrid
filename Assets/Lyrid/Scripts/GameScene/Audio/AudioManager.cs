@@ -1,7 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using CriWare;
+using CriWare.Assets;
 using Lyrid.GameScene.Charts;
+using Lyrid.Common;
 
 namespace Lyrid.GameScene.Audio
 {
@@ -11,8 +14,16 @@ namespace Lyrid.GameScene.Audio
     public class AudioManager
     {
         #region Field
-        /// <summary> 楽曲の AudioSource </summary>
-        private AudioSource music;
+        /// <summary> CriAtomExPlayer のインスタンス (楽曲用) </summary>
+        private CriAtomExPlayer musicPlayer;
+        /// <summary> CriAtomExPlayer のインスタンス (タップ音用) </summary>
+        private CriAtomExPlayer tapSoundPlayer;
+        // <summary> CriAtomExPlayback のインスタンス </summary>
+        private CriAtomExPlayback playback;
+        /// <summary> 楽曲の acb ファイル </summary>
+        private CriAtomExAcb music;
+        /// <summary> タップ音の acb ファイル </summary>
+        private CriAtomExAcb tapSound;
         /// <summary> 再生中かどうか </summary>
         private bool nowPlaying = false;
         /// <summary> 実際の楽曲再生位置を取得する間隔 </summary>
@@ -29,13 +40,17 @@ namespace Lyrid.GameScene.Audio
         #endregion
 
         #region Constructor
-        /// <param name="music"> 楽曲の AudioSource </param>
+        /// <param name="music"> 楽曲の acb ファイル </param>
         /// <param name="initTime"> 時間の初期値 </param>
-        public AudioManager(AudioSource music, float initTime)
+        public AudioManager(CriAtomExAcb music, CriAtomExAcb tapSound, float initTime)
         {
             this.music = music;
             this.time = initTime;
             this.initTime = initTime;
+            musicPlayer = new CriAtomExPlayer(true);
+            musicPlayer.SetCue(music, 0);
+            tapSoundPlayer = new CriAtomExPlayer();
+            tapSoundPlayer.SetCue(tapSound, 0);
         }
         #endregion
 
@@ -53,7 +68,7 @@ namespace Lyrid.GameScene.Audio
                 time += deltaTime;
                 if (time >= 0)
                 {
-                    music.Play();
+                    playback = musicPlayer.Start();
                     nowPlaying = true;
                 }
             }
@@ -63,7 +78,7 @@ namespace Lyrid.GameScene.Audio
                 if (samplingFlameCounter++ >= samplingFlame)
                 {
                     samplingFlameCounter = 0;
-                    time = music.time;
+                    time = playback.GetTimeSyncedWithAudio() * 0.001f;
                 }
                 // サンプリング時以外は deltaTime 分だけ進める
                 else {
@@ -72,9 +87,14 @@ namespace Lyrid.GameScene.Audio
             }
         }
 
+        public void PlayTapSound()
+        {
+            tapSoundPlayer.Start();
+        }
+
         public void Reset()
         {
-            music.Stop();
+            musicPlayer.Stop();
             nowPlaying = false;
             time = initTime;
         }
