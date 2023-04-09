@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DG.Tweening;
 using Lyrid.GameScene.Charts;
 using Lyrid.GameScene.Lanes;
 using static Lyrid.GameScene.GameSceneConsts;
@@ -42,13 +43,13 @@ namespace Lyrid.GameScene.Notes
         public void Init(float generatedTime, float judgementTime, NoteParam noteParam, bool isSlideNote)
         {
             // レーンを追従するか判定し、追従する場合はレーンの transform を取得
-            if (noteParam.laneNum <= 0)
+            if (noteParam.laneNum < 0)
             {
                 followLane = false;
             }
             else
             {
-                laneTf = GameObject.FindWithTag("Lanes").GetComponent<LanesManager>().laneTransforms[noteParam.laneNum - 1];
+                laneTf = GameObject.FindWithTag("Lanes").GetComponent<LanesManager>().laneTransforms[noteParam.laneNum];
             }
             // 初期位置を設定
             tfCache = gameObject.transform;

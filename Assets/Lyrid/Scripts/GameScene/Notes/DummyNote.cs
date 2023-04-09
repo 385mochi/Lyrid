@@ -22,18 +22,6 @@ namespace Lyrid.GameScene.Notes
 
         #region Methods
         /// <summary>
-        /// ノーツを移動するメソッド
-        /// </summary>
-        /// <param name="time"> 現在の時間 </param>
-        /// <returns> 以降 Move を実行するかどうか </returns>
-        public override bool Move(float time)
-        {
-            // ノーツの位置を更新する
-            view.Move((judgementTime - time) * inverseTime);
-            return view.gameObject.activeSelf;
-        }
-
-        /// <summary>
         /// ノートを判定するメソッド(常に判定しない)
         /// </summary>
         /// <param name="time"> 現在の時間 </param>

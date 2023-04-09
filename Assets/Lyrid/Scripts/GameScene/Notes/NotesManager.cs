@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Lyrid.GameScene.Charts;
 using Lyrid.GameScene.Audio;
+using Lyrid.GameScene.Lanes;
 
 namespace Lyrid.GameScene.Notes
 {
@@ -26,6 +27,8 @@ namespace Lyrid.GameScene.Notes
         private MovementManager movementManager;
         /// <summary> JudgementManager のインスタンス </summary>
         private JudgementManager judgementManager;
+        /// <summary> LanesManager のインスタンス </summary>
+        private LanesManager lanesManager;
         #endregion
 
         #region Constructor
@@ -38,6 +41,7 @@ namespace Lyrid.GameScene.Notes
             this.speed = chart.initSpeed;
             this.movementManager = movementManager;
             this.judgementManager = judgementManager;
+            lanesManager = GameObject.Find("Lanes").GetComponent<LanesManager>();
         }
         #endregion
 
@@ -106,6 +110,18 @@ namespace Lyrid.GameScene.Notes
                     movementManager.AddTarget(slideNote);
                     judgementManager.AddTarget(slideNote);
                     slideNoteIndex++;
+                    break;
+                case ElementType.LanePos:
+                    int laneNum = noteParam.laneNum;
+                    // リストが 1 以下であればなにもしない
+                    if (chart.lanePosIndexList[laneNum].Count <= 1)
+                    {
+                        break;
+                    }
+                    float t = chart.timeData[chart.lanePosIndexList[laneNum][1]] - chart.timeData[chart.lanePosIndexList[laneNum][0]];
+                    float delay = judgementTime - generatedTime;
+                    lanesManager.lanes[noteParam.laneNum].Move(t, delay, noteParam.var_1, noteParam.connectionType);
+                    chart.lanePosIndexList[laneNum].RemoveAt(0);
                     break;
             }
         }

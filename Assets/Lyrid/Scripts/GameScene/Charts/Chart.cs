@@ -225,7 +225,7 @@ namespace Lyrid.GameScene.Charts
                     // タップノートの場合
                     case 1:
                         noteParam.type = ElementType.Tap;
-                        noteParam.laneNum = int.Parse(strArray[index + 1]);
+                        noteParam.laneNum = int.Parse(strArray[index + 1]) - 1;
                         noteParam.var_1 = float.Parse(strArray[index + 2]);
                         newList.Add(noteParam);
                         totalNotesNum++;
@@ -234,7 +234,7 @@ namespace Lyrid.GameScene.Charts
                     // スワイプノートの場合
                     case 2:
                         noteParam.type = ElementType.Swipe;
-                        noteParam.laneNum = int.Parse(strArray[index + 1]);
+                        noteParam.laneNum = int.Parse(strArray[index + 1]) - 1;
                         noteParam.var_1 = float.Parse(strArray[index + 2]);
                         newList.Add(noteParam);
                         totalNotesNum++;
@@ -243,7 +243,7 @@ namespace Lyrid.GameScene.Charts
                     // フリックノートの場合
                     case 3:
                         noteParam.type = ElementType.Flick;
-                        noteParam.laneNum = int.Parse(strArray[index + 1]);
+                        noteParam.laneNum = int.Parse(strArray[index + 1]) - 1;
                         noteParam.var_1 = float.Parse(strArray[index + 2]);
                         newList.Add(noteParam);
                         totalNotesNum++;
@@ -252,7 +252,7 @@ namespace Lyrid.GameScene.Charts
                     // スライドノーツの場合
                     case 4:
                         noteParam.type = ElementType.Slide;
-                        noteParam.laneNum = int.Parse(strArray[index + 1]);
+                        noteParam.laneNum = int.Parse(strArray[index + 1]) - 1;
                         noteParam.var_1 = float.Parse(strArray[index + 2]);
                         noteParam.var_2 = float.Parse(strArray[index + 3]);
                         noteParam.var_3 = float.Parse(strArray[index + 4]);

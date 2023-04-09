@@ -48,11 +48,23 @@ namespace Lyrid.GameScene.Notes
 
         #region Methods
         /// <summary>
-        /// ノートを移動する抽象メソッド
+        /// ノートを移動するメソッド
         /// </summary>
         /// <param name="time"> 現在の時間 </param>
         /// <returns> 以降 Move を実行するかどうか </returns>
-        public abstract bool Move(float rate);
+        public bool Move(float time)
+        {
+            // ノーツの位置を更新する
+            view.Move((judgementTime - time) * inverseTime);
+            if (isSlideNote)
+            {
+                return view.gameObject.activeSelf;
+            }
+            else
+            {
+                return !judged;
+            }
+        }
 
         /// <summary>
         /// ノートを判定する抽象メソッド

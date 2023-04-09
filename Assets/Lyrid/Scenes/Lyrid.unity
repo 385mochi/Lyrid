@@ -1002,10 +1002,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.39215687, g: 0.39215687, b: 0.39215687, a: 0.39215687}
-  m_RaycastTarget: 1
+  m_Color: {r: 0.23529412, g: 0.23529412, b: 0.23529412, a: 0.23529412}
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
+  m_Maskable: 0
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -1078,7 +1078,7 @@ Camera:
     width: 0.9995003
     height: 1
   near clip plane: 0.3
-  far clip plane: 20
+  far clip plane: 120
   field of view: 60
   orthographic: 0
   orthographic size: 5
