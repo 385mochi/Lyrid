@@ -24,6 +24,8 @@ namespace Lyrid.GameScene.Notes
         private float margin = 0.5f;
         /// <summary> 初期 z 座標 </summary>
         private float initPosZ;
+        /// <summary> ノートの幅 </summary>
+        private float width = 1.0f;
         /// <summary> transform キャッシュ </summary>
         private Transform tfCache;
         /// <summary> レーンに追従するかどうか </summary>
@@ -68,6 +70,8 @@ namespace Lyrid.GameScene.Notes
             {
                 SetColor(noteParam.type);
             }
+            // サイズを設定
+            width = noteParam.var_1;
         }
 
         /// <summary>
@@ -80,7 +84,7 @@ namespace Lyrid.GameScene.Notes
             if (followLane)
             {
                 tfCache.localPosition = new Vector3(laneTf.position.x, 0, newPosZ);
-                tfCache.localScale = new Vector3(laneTf.localScale.x, tfCache.localScale.y, tfCache.localScale.z);
+                tfCache.localScale = new Vector3(laneTf.localScale.x * width, tfCache.localScale.y, tfCache.localScale.z);
             }
             else
             {
@@ -101,7 +105,7 @@ namespace Lyrid.GameScene.Notes
             pos.x = posX;
             tfCache.localPosition = pos;
             Vector3 scale = tfCache.localScale;
-            scale.x = scaleX;
+            scale.x = scaleX * width;
             tfCache.localScale = scale;
         }
 

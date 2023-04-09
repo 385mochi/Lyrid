@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Lyrid.GameScene.Charts;
 using Lyrid.GameScene.Input;
+using Lyrid.GameScene.Lanes;
 using Lyrid.GameScene.Score;
 
 namespace Lyrid.GameScene.Notes
@@ -23,6 +24,8 @@ namespace Lyrid.GameScene.Notes
         private ScoreManager scoreManager;
         /// <summary> TouchInputManager のインスタンス </summary>
         private TouchInputManager touchInputManager;
+        /// <summary> LanesManager のインスタンス </summary>
+        private LanesManager lanesManager;
         #endregion
 
         #region Constructor
@@ -33,6 +36,7 @@ namespace Lyrid.GameScene.Notes
             this.scoreManager = scoreManager;
             this.touchInputManager = touchInputManager;
             this.autoPlay = autoPlay;
+            lanesManager = GameObject.Find("Lanes").GetComponent<LanesManager>();
         }
         #endregion
 
@@ -86,6 +90,7 @@ namespace Lyrid.GameScene.Notes
                     if (note.judgementTime - 0.008f <= time)
                     {
                         note.judged = true;
+                        lanesManager.lanes[note.noteParam.laneNum].EffectLightUp(note.noteParam.type);
                         scoreManager.AddScore(JudgementType.Perfect);
                     }
                 }
@@ -119,6 +124,11 @@ namespace Lyrid.GameScene.Notes
                         // そのほかの場合はそれを判定とする
                         else
                         {
+                            if (target is Note)
+                            {
+                                Note note = (Note)targets[i];
+                                lanesManager.lanes[note.noteParam.laneNum].EffectLightUp(note.noteParam.type);
+                            }
                             scoreManager.AddScore(judgementType);
                             break;
                         }

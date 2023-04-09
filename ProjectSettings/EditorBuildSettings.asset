@@ -4,7 +4,10 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Lyrid/Scenes/Lyrid.unity
+    guid: b358122f97e2ea940b701662cf07f1d6
   m_configObjects:
     com.unity.adaptiveperformance.loader_settings: {fileID: 11400000, guid: cd493da730c20f14dae8dcfbb51bf109,
       type: 2}

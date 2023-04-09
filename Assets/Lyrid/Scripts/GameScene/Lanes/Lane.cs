@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using Lyrid.GameScene.Charts;
 using static Lyrid.Common.Easings;
 
 namespace Lyrid.GameScene.Lanes
@@ -14,7 +15,9 @@ namespace Lyrid.GameScene.Lanes
     {
         #region Field
         /// <summary> レーンの光のオブジェクト </summary>
-        [SerializeField] private GameObject laneLight;
+        [SerializeField] private LaneLight laneLight;
+        /// <summary> レーンのエフェクトのオブジェクト </summary>
+        [SerializeField] private LaneEffectLight laneEffectLight;
         #endregion
 
         #region Methods
@@ -32,7 +35,16 @@ namespace Lyrid.GameScene.Lanes
         /// </summary>
         public void LightUp()
         {
-            laneLight.GetComponent<LaneLight>().LightUp();
+            laneLight.LightUp();
+        }
+
+        /// <summary>
+        /// レーンのエフェクトを光らせるメソッド
+        /// </summary>
+        /// <param name="type"> 判定したノートの種類 </param>
+        public void EffectLightUp(ElementType type)
+        {
+            laneEffectLight.LightUp(type);
         }
 
         /// <summary>

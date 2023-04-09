@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5208679086462437212}
   - component: {fileID: 4429906485131773230}
-  - component: {fileID: 5561356043864980037}
+  - component: {fileID: 7260127567401074027}
   m_Layer: 0
   m_Name: LaneEfectLight
   m_TagString: Untagged
@@ -26,7 +26,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 206823895873256758}
   m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 0, z: -0.48}
+  m_LocalPosition: {x: 0, y: 0, z: -0.5}
   m_LocalScale: {x: 1, y: 2, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -75,7 +75,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 0d2e29cba4df87941bd838d2d878f097, type: 3}
-  m_Color: {r: 0, g: 0, b: 0, a: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -85,7 +85,7 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &5561356043864980037
+--- !u!114 &7260127567401074027
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -94,10 +94,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 206823895873256758}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3b396af27815da64d9fbdb2274a6a514, type: 3}
+  m_Script: {fileID: 11500000, guid: f3a8e30a75a6dc747b7bb62808f8dcad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  laneLight: {fileID: 4429906485131773230}
+  laneEffectLight: {fileID: 4429906485131773230}
 --- !u!1 &1180544799423229823
 GameObject:
   m_ObjectHideFlags: 0
@@ -328,7 +328,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 10eb70e5dbb579f45a7074424c0affd1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  laneLight: {fileID: 1180544799423229823}
+  laneLight: {fileID: 1180544799423229820}
+  laneEffectLight: {fileID: 7260127567401074027}
 --- !u!1 &7900898327613878143
 GameObject:
   m_ObjectHideFlags: 0

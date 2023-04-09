@@ -25,6 +25,8 @@ namespace Lyrid.GameScene.Notes
         public NoteView view { get; protected set; }
         /// <summary> 判定されたかどうか </summary>
         public bool judged { get; set; }
+        /// <summary> ノートのパラメータ </summary>
+        public NoteParam noteParam { get; private set; }
         #endregion
 
         #region Constructor
@@ -34,9 +36,9 @@ namespace Lyrid.GameScene.Notes
         /// <param name="isSlideNote"> スライドノートかどうか </param>
         public Note(float generatedTime, float judgementTime, NoteParam noteParam, bool isSlideNote)
         {
-            // 各時間を取得
             this.judgementTime = judgementTime;
             this.isSlideNote = isSlideNote;
+            this.noteParam = noteParam;
             inverseTime = 1.0f / (judgementTime - generatedTime);
             // オブジェクトを生成し、初期化
             GameObject noteObj = GameObject.FindWithTag("NoteObjectPool").GetComponent<ObjectPool>().GetObject();
