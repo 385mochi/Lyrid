@@ -87,7 +87,7 @@ namespace Lyrid.GameScene
             lanesManager.SetLanes(chart.maxLaneNum, chart.initLaneNum, chart.laneWidth, chart.setLaneVisible);
 
             // 各 Manager のインスタンスを生成
-            audioManager = new AudioManager(music, -0.5f);
+            audioManager = new AudioManager(music, -2.0f);
             touchInputManager = new TouchInputManager();
             movementManager = new MovementManager();
             scoreManager = new ScoreManager(chart.totalJudgementTargetsNum);
