@@ -85,33 +85,27 @@ namespace Lyrid.GameScene.Notes
         }
 
         /// <summary>
-        /// z 方向の位置の割合からラインの x 座標を取得するメソッド
+        /// z 方向の位置の割合からラインの x 座標と幅を取得するメソッド
         /// </summary>
         /// <param name="rate"> z 方向の位置の割合 </param>
-        /// <returns> 対応する x 座標 </returns>
-        public float GetPosX(float rate)
+        /// <returns> 対応する x 座標と幅のタプル </returns>
+        public (float, float) GetCurveX(float rate)
         {
-            // ラインが直線のとき
-            if (controlRateX == controlRateZ)
+            // 曲線の z 座標が最も近くなるまで進める
+            float posZ = startTransform.position.z + (endTransform.position.z - startTransform.position.z) * rate;
+            while (dummyNoteIndex < bezierCurveSize - 1 && vertices[dummyNoteIndex * 2].z < posZ)
             {
-                return startTransform.position.x + (endTransform.position.x - startTransform.position.x) * rate;
+                dummyNoteIndex++;
             }
-            // 曲線のとき
-            else
-            {
-                // 曲線の z 座標が最も近くなるまで進める
-                float posZ = startTransform.position.z + (endTransform.position.z - startTransform.position.z) * rate;
-                while (dummyNoteIndex < bezierCurveSize - 1 && vertices[dummyNoteIndex * 2].z < posZ)
-                {
-                    dummyNoteIndex++;
-                }
-                float startPosX = (vertices[dummyNoteIndex * 2].x + vertices[dummyNoteIndex * 2 + 1].x) * 0.5f;
-                float endPosX = (vertices[dummyNoteIndex * 2 + 2].x + vertices[dummyNoteIndex * 2 + 3].x) * 0.5f;
-                float startPosZ = vertices[dummyNoteIndex * 2].z;
-                float endPosZ = vertices[dummyNoteIndex * 2 + 2].z;
-                float linearRate = (posZ - startPosZ) / (endPosZ - startPosZ);
-                return startPosX + (endPosX - startPosX) * linearRate;
-            }
+            // 座標を計算する
+            float startPosX = (vertices[dummyNoteIndex * 2].x + vertices[dummyNoteIndex * 2 + 1].x) * 0.5f;
+            float endPosX = (vertices[dummyNoteIndex * 2 + 2].x + vertices[dummyNoteIndex * 2 + 3].x) * 0.5f;
+            float startPosZ = vertices[dummyNoteIndex * 2].z;
+            float endPosZ = vertices[dummyNoteIndex * 2 + 2].z;
+            float startWidth = vertices[dummyNoteIndex * 2 + 1].x - vertices[dummyNoteIndex * 2].x;
+            float endWidth = vertices[dummyNoteIndex * 2 + 3].x - vertices[dummyNoteIndex * 2 + 2].x;
+            float linearRate = (posZ - startPosZ) / (endPosZ - startPosZ);
+            return (startPosX + (endPosX - startPosX) * linearRate, startWidth + (endWidth - startWidth) * linearRate);
         }
 
         /// <summary>

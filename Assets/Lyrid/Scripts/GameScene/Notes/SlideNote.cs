@@ -189,7 +189,8 @@ namespace Lyrid.GameScene.Notes
                     dummyNote = new DummyNote(0, 0, noteParamList[0], true);
                     dummyNote.view.Move(0.0f);
                     dummyNoteLineIndex = 0;
-                    dummyNote.view.MoveX(slideNoteLineViewList[dummyNoteLineIndex].GetPosX((time - noteList[dummyNoteLineIndex].judgementTime) * judgementTimeDiffInverseList[dummyNoteLineIndex]));
+                    (float, float) curveX = slideNoteLineViewList[dummyNoteLineIndex].GetCurveX((time - noteList[dummyNoteLineIndex].judgementTime) * judgementTimeDiffInverseList[dummyNoteLineIndex]);
+                    dummyNote.view.MoveX(curveX.Item1, curveX.Item2);
                 }
             }
             else
@@ -212,7 +213,8 @@ namespace Lyrid.GameScene.Notes
                     {
                         dummyNoteLineIndex++;
                     }
-                    dummyNote.view.MoveX(slideNoteLineViewList[dummyNoteLineIndex].GetPosX((time - noteList[dummyNoteLineIndex].judgementTime) * judgementTimeDiffInverseList[dummyNoteLineIndex]));
+                    (float, float) curveX = slideNoteLineViewList[dummyNoteLineIndex].GetCurveX((time - noteList[dummyNoteLineIndex].judgementTime) * judgementTimeDiffInverseList[dummyNoteLineIndex]);
+                    dummyNote.view.MoveX(curveX.Item1, curveX.Item2);
                 }
             }
         }

@@ -80,6 +80,7 @@ namespace Lyrid.GameScene.Notes
             if (followLane)
             {
                 tfCache.localPosition = new Vector3(laneTf.position.x, 0, newPosZ);
+                tfCache.localScale = new Vector3(laneTf.localScale.x, tfCache.localScale.y, tfCache.localScale.z);
             }
             else
             {
@@ -93,11 +94,15 @@ namespace Lyrid.GameScene.Notes
         /// ノートの x 座標のみを更新させるメソッド
         /// </summary>
         /// <param name="posX"> 更新後の x 座標 </param>
-        public void MoveX(float posX)
+        /// <param name="scaleX"> 更新後の幅 </param>
+        public void MoveX(float posX, float scaleX)
         {
             Vector3 pos = tfCache.localPosition;
             pos.x = posX;
             tfCache.localPosition = pos;
+            Vector3 scale = tfCache.localScale;
+            scale.x = scaleX;
+            tfCache.localScale = scale;
         }
 
         /// <summary>

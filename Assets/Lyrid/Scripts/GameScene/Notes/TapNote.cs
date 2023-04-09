@@ -27,7 +27,7 @@ namespace Lyrid.GameScene.Notes
         /// <param name="time"> 現在の時間 </param>
         /// <param name="touchType"> タッチの種類 </param>
         /// <param name="posX"> タッチ位置の x 座標 </param>
-        /// <returns></returns>
+        /// <returns> 判定の種類 </returns>
         public override JudgementType Judge(float time, int touchType, float posX)
         {
             // 判定済みであれば Judged を返す

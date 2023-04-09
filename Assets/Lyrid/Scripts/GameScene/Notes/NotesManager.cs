@@ -112,16 +112,22 @@ namespace Lyrid.GameScene.Notes
                     slideNoteIndex++;
                     break;
                 case ElementType.LanePos:
-                    int laneNum = noteParam.laneNum;
-                    // リストが 1 以下であればなにもしない
-                    if (chart.lanePosIndexList[laneNum].Count <= 1)
+                    if (chart.lanePosIndexList[noteParam.laneNum].Count > 1)
                     {
-                        break;
+                        float t = chart.timeData[chart.lanePosIndexList[noteParam.laneNum][1]] - chart.timeData[chart.lanePosIndexList[noteParam.laneNum][0]];
+                        float delay = judgementTime - generatedTime;
+                        lanesManager.lanes[noteParam.laneNum].Move(t, delay, noteParam.var_1, noteParam.connectionType);
+                        chart.lanePosIndexList[noteParam.laneNum].RemoveAt(0);
                     }
-                    float t = chart.timeData[chart.lanePosIndexList[laneNum][1]] - chart.timeData[chart.lanePosIndexList[laneNum][0]];
-                    float delay = judgementTime - generatedTime;
-                    lanesManager.lanes[noteParam.laneNum].Move(t, delay, noteParam.var_1, noteParam.connectionType);
-                    chart.lanePosIndexList[laneNum].RemoveAt(0);
+                    break;
+                case ElementType.LaneWid:
+                    if (chart.laneWidIndexList[noteParam.laneNum].Count > 1)
+                    {
+                        float t = chart.timeData[chart.laneWidIndexList[noteParam.laneNum][1]] - chart.timeData[chart.laneWidIndexList[noteParam.laneNum][0]];
+                        float delay = judgementTime - generatedTime;
+                        lanesManager.lanes[noteParam.laneNum].Scale(t, delay, noteParam.var_1, noteParam.connectionType);
+                        chart.laneWidIndexList[noteParam.laneNum].RemoveAt(0);
+                    }
                     break;
             }
         }

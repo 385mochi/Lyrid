@@ -49,6 +49,21 @@ namespace Lyrid.GameScene.Lanes
                 gameObject.transform.DOMoveX(posX, t).SetDelay(delay).SetEase(GetEaseType(option));
             }
         }
+
+        /// <summary>
+        /// レーン幅を変化させるメソッド
+        /// </summary>
+        /// <param name="scale"> 目標となる幅 </param>
+        /// <param name="option"> 移動の </param>
+        /// <param name="t"> 移動時間 </param>
+        /// <param name="delay"> 遅延時間 </param>
+        public void Scale(float t,  float delay, float scale, int option)
+        {
+            if (option > 0)
+            {
+                gameObject.transform.DOScaleX(scale, t).SetDelay(delay).SetEase(GetEaseType(option));
+            }
+        }
         #endregion
     }
 }
