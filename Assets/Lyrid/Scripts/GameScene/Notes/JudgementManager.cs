@@ -73,11 +73,20 @@ namespace Lyrid.GameScene.Notes
 
         /// <summary>
         /// 判定対象を追加するメソッド (通常ノート)
+        /// 常に判定時間の昇順になるようにする
         /// </summary>
         /// <param name="target"> 判定対象 </param>
         public void AddTarget(Note target)
         {
-            targetNoteList.Add(target);
+            for (int i = targetNoteList.Count - 1; i >= 0 ; i++)
+            {
+                if (targetNoteList[i].judgementTime <= target.judgementTime)
+                {
+                    targetNoteList.Insert(i + 1, target);
+                    return;
+                }
+            }
+            targetNoteList.Insert(0, target);
         }
 
         /// <summary>

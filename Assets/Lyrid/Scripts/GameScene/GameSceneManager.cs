@@ -61,10 +61,6 @@ namespace Lyrid.GameScene
         #region Methods
         void OnEnable()
         {
-            status = Status.Start;
-            // 60fps に設定
-            QualitySettings.vSyncCount = 0;
-            Application.targetFrameRate = 60;
             Init();
         }
 
@@ -88,6 +84,12 @@ namespace Lyrid.GameScene
         /// </summary>
         private async void Init()
         {
+            status = Status.Start;
+
+            // 60fps に設定
+            QualitySettings.vSyncCount = 0;
+            Application.targetFrameRate = 60;
+
             // 楽曲をロード
             assetLoader = new AssetLoader();
             CriAtomExAcb music = await assetLoader.LoadAudioAsync("dorekisei_audio");
