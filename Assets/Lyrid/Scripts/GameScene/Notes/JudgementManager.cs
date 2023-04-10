@@ -128,32 +128,6 @@ namespace Lyrid.GameScene.Notes
                 IReadOnlyList<int> touchTypeList = touchInputManager.touchTypeList;
                 IReadOnlyList<float> posXList = touchInputManager.posXList;
 
-                // スライドノートを判定
-                for (int i = 0; i < targetSlideNoteList.Count; i++)
-                {
-                    SlideNote slideNote = targetSlideNoteList[i];
-
-                    // 判定済みであれば無視
-                    if (slideNote.judged)
-                    {
-                        continue;
-                    }
-
-                    JudgementType judgementType = slideNote.Judge(time, touchTypeList, posXList);
-
-                    // 判定が None であれば無視
-                    if (judgementType == JudgementType.None)
-                    {
-                        continue;
-                    }
-                    // そのほかの場合はそれを判定とする
-                    else
-                    {
-                        scoreManager.AddScore(judgementType);
-                        slideNote.judged = true;
-                    }
-                }
-
                 // 各 Touch について通常ノートを判定
                 for (int i = 0; i < touchTypeList.Count; i++)
                 {
@@ -211,6 +185,32 @@ namespace Lyrid.GameScene.Notes
                             scoreManager.AddScore(judgementType);
                             note.judged = true;
                         }
+                    }
+                }
+
+                // スライドノートを判定
+                for (int i = 0; i < targetSlideNoteList.Count; i++)
+                {
+                    SlideNote slideNote = targetSlideNoteList[i];
+
+                    // 判定済みであれば無視
+                    if (slideNote.judged)
+                    {
+                        continue;
+                    }
+
+                    JudgementType judgementType = slideNote.Judge(time, touchTypeList, posXList);
+
+                    // 判定が None であれば無視
+                    if (judgementType == JudgementType.None)
+                    {
+                        continue;
+                    }
+                    // そのほかの場合はそれを判定とする
+                    else
+                    {
+                        scoreManager.AddScore(judgementType);
+                        slideNote.judged = true;
                     }
                 }
             }

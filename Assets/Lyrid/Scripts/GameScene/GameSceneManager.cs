@@ -77,9 +77,9 @@ namespace Lyrid.GameScene
                 float time = audioManager.time;
                 // 各 Manager を Update
                 touchInputManager.ManagedUpdate();
-                notesManager.ManagedUpdate(time);
                 judgementManager.ManagedUpdate(time);
                 movementManager.ManagedUpdate(time);
+                notesManager.ManagedUpdate(time);
             }
         }
 
@@ -110,6 +110,25 @@ namespace Lyrid.GameScene
             scoreManager = new ScoreManager(chart.totalJudgementTargetsNum);
             judgementManager = new JudgementManager(audioManager, scoreManager, touchInputManager, autoPlay);
             notesManager = new NotesManager(chart, movementManager, judgementManager);
+
+            // ロード画像
+            Image frontImage = frontImageObj.GetComponent<Image>();
+
+            // 背景を消す
+            DOTween.ToAlpha(
+                () => loadingIcon.color,
+                color => loadingIcon.color = color,
+                0.0f, // 目標値
+                0.2f  // 所要時間
+            ).SetDelay(1.0f).SetEase(GetEaseType(1));
+            DOTween.ToAlpha(
+                () => frontImage.color,
+                color => frontImage.color = color,
+                0.0f, // 目標値
+                0.2f  // 所要時間
+            ).SetEase(GetEaseType(1)).SetDelay(1.0f).OnComplete(() => {
+                frontImageObj.SetActive(false);
+            });
 
             // 状態を更新
             status = Status.Playing;

@@ -113,8 +113,8 @@ namespace Lyrid.GameScene.Notes
         /// <returns> 判定の種類 </returns>
         public JudgementType Judge(float time, IReadOnlyList<int> touchTypeList, IReadOnlyList<float> posXList)
         {
-            // 先頭ノートが判定済みで、先頭の判定時間を超え、かつ末尾が未判定の場合に判定
-            if (noteList[0].judged && time > judgementTimeList[0]  && !noteList[noteList.Count - 1].judged)
+            // 先頭ノートが判定済みで、先頭の判定時間を超え、かつダミーノートが生成済みで、末尾のノートが未判定なら処理
+            if (noteList[0].judged && time > judgementTimeList[0] && dummyNote != null && !noteList[noteList.Count - 1].judged)
             {
                 // 今回のフレームでダミーノートが押されているかどうか
                 bool dummyNotePressedInThisFrame = false;
@@ -122,7 +122,7 @@ namespace Lyrid.GameScene.Notes
                 {
                     int touchType = touchTypeList[i];
                     float posX = posXList[i];
-                    if ((touchType == 1 || touchType == 2 || touchType == 3) && dummyNote != null && dummyNote.Touched(posX))
+                    if ((touchType == 1 || touchType == 2 || touchType == 3) && dummyNote.Touched(posX))
                     {
                         dummyNotePressedInThisFrame = true;
                     }

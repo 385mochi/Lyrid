@@ -91,6 +91,11 @@ namespace Lyrid.GameScene.Notes
         /// <returns> 対応する x 座標と幅のタプル </returns>
         public (float, float) GetCurveX(float rate)
         {
+            if (rate < 0)
+            {
+                return ((vertices[0].x + vertices[1].x) * 0.5f, vertices[1].x - vertices[0].x);
+            }
+
             // 曲線の z 座標が最も近くなるまで進める
             float posZ = startTransform.position.z + (endTransform.position.z - startTransform.position.z) * rate;
             while (dummyNoteIndex < bezierCurveSize - 1 && vertices[dummyNoteIndex * 2].z < posZ)
