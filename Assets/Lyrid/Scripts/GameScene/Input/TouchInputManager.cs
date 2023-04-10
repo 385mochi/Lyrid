@@ -27,10 +27,6 @@ namespace Lyrid.GameScene.Input
         private List<Transform> laneTransforms;
         /// <summary> Lane のリスト </summary>
         private List<Lane> lanes;
-        /// <summary> レーンを押しているかどうか </summary>
-        private List<bool> pressed;
-        /// <summary> 前回のフレームでレーンを押しているかどうか </summary>
-        private List<bool> prevPressed;
         #endregion
 
         #region Property
@@ -54,14 +50,6 @@ namespace Lyrid.GameScene.Input
             laneTransforms = GameObject.FindWithTag("Lanes").GetComponent<LanesManager>().laneTransforms;
             // Lane のリストを取得する
             lanes = GameObject.FindWithTag("Lanes").GetComponent<LanesManager>().lanes;
-            // レーンを押しているかどうか保持するリストを初期化
-            pressed = new List<bool>(lanes.Count);
-            prevPressed = new List<bool>(lanes.Count);
-            for (int i = 0; i < lanes.Count; i++)
-            {
-                pressed.Add(false);
-                prevPressed.Add(false);
-            }
         }
         #endregion
 
@@ -85,10 +73,6 @@ namespace Lyrid.GameScene.Input
             // リストを初期化
             touchTypeList = new List<int>(10);
             posXList = new List<float>(10);
-            for (int i = 0; i < pressed.Count; i++)
-            {
-                pressed[i] = false;
-            }
 
             // 各 touch について処理
             var activeTouches = Touch.activeTouches;
@@ -104,19 +88,9 @@ namespace Lyrid.GameScene.Input
                 {
                     if (GetTouchTypeNum(touch) != -1)
                     {
-                        if (!prevPressed[index])
-                        {
-                            lanes[index].LightUp();
-                        }
-                        pressed[index] = true;
+                        lanes[index].LightUp();
                     }
                 }
-            }
-
-            // 今回のレーンのタップ情報を保持
-            for (int i = 0; i < pressed.Count; i++)
-            {
-                prevPressed[i] = pressed[i];
             }
         }
 
@@ -127,7 +101,7 @@ namespace Lyrid.GameScene.Input
         /// <returns> レーン番号 (0-based) </returns>
         private int GetTouchedLane(Touch touch)
         {
-            if (GetTouchTypeNum(touch) == 1 || GetTouchTypeNum(touch) == 2 || GetTouchTypeNum(touch) == 3)
+            if (GetTouchTypeNum(touch) == 1)
             {
                 int index = 0;
                 foreach (Transform laneTransform in laneTransforms)

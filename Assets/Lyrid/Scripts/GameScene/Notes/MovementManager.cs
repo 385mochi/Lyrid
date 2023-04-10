@@ -11,14 +11,17 @@ namespace Lyrid.GameScene.Notes
     public class MovementManager
     {
         #region Field
-        /// <summary> 移動対象のリスト </summary>
-        private List<IMovable> targets;
+        /// <summary> 移動対象の通常ノートのリスト </summary>
+        private List<Note> targetNoteList;
+        /// <summary> 移動対象の通常ノートのリスト </summary>
+        private List<SlideNote> targetSlideNoteList;
         #endregion
 
         #region Constructor
         public MovementManager()
         {
-            targets = new List<IMovable>();
+            targetNoteList = new List<Note>(30);
+            targetSlideNoteList = new List<SlideNote>(20);
         }
         #endregion
 
@@ -29,11 +32,18 @@ namespace Lyrid.GameScene.Notes
         /// <param name="time"> 現在の時間 </param>
         public void ManagedUpdate(float time)
         {
-            for (int i = targets.Count - 1; i >= 0; i--)
+            for (int i = 0; i < targetNoteList.Count; i++)
             {
-                if (!targets[i].Move(time))
+                if (!targetNoteList[i].Move(time))
                 {
-                    targets.RemoveAt(i);
+                    targetNoteList.RemoveAt(i);
+                }
+            }
+            for (int i = 0; i < targetSlideNoteList.Count; i++)
+            {
+                if (!targetSlideNoteList[i].Move(time))
+                {
+                    targetSlideNoteList.RemoveAt(i);
                 }
             }
         }
@@ -43,16 +53,26 @@ namespace Lyrid.GameScene.Notes
         /// </summary>
         public void Reset()
         {
-            targets = new List<IMovable>();
+            targetNoteList = new List<Note>(30);
+            targetSlideNoteList = new List<SlideNote>(20);
         }
 
         /// <summary>
-        /// 移動対象を追加するメソッド
+        /// 移動対象を追加するメソッド (通常ノート)
         /// </summary>
         /// <param name="target"> 移動対象 </param>
-        public void AddTarget(IMovable target)
+        public void AddTarget(Note target)
         {
-            targets.Add(target);
+            targetNoteList.Add(target);
+        }
+
+        /// <summary>
+        /// 移動対象を追加するメソッド (スライドノート)
+        /// </summary>
+        /// <param name="target"> 移動対象 </param>
+        public void AddTarget(SlideNote target)
+        {
+            targetSlideNoteList.Add(target);
         }
         #endregion
     }

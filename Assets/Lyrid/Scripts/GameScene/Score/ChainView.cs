@@ -80,7 +80,9 @@ namespace Lyrid.GameScene.Score
         public void Reset()
         {
             preChain = 0;
+            chainStatus = ChainStatus.AllPerfect;
             chainText.text = "0";
+            chainText.color = new Color32(200, 255, 255, 200);
         }
         #endregion
     }

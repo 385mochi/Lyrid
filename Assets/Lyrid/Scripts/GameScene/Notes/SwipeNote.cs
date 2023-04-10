@@ -30,21 +30,18 @@ namespace Lyrid.GameScene.Notes
         /// <returns> 判定時間 </returns>
         public override JudgementType Judge(float time, int touchType, float posX)
         {
-            // 判定済みであれば Judged を返す
-            if (judged)
-            {
-                return JudgementType.Judged;
-            }
             // 差分時間
             float diffTime = time - judgementTime;
             // 差分時間から判定を取得
             JudgementType judgementType = GetJudgement(diffTime);
-            // None または Judged であればそのまま返す
-            if (judgementType == JudgementType.None || judgementType == JudgementType.Judged)
+
+            // 判定済み、または判定が None であれば None を返す
+            if (judged || judgementType == JudgementType.None)
             {
-               return judgementType;
+               return JudgementType.None;
             }
-            // touchType が 0 かつ Miss 判定であればそれを返す
+
+            // touchType が 0 かつ Miss 判定であれば Miss を返す
             if (touchType == 0 && judgementType == JudgementType.Miss)
             {
                 Remove();
@@ -52,22 +49,22 @@ namespace Lyrid.GameScene.Notes
                 return JudgementType.Miss;
             }
 
-            // タッチ途中であり、判定時間が正の値で、ノートの範囲内であれば判定する
-            if ((touchType == 2 || touchType == 3) && (diffTime >= -0.008f) && Touched(posX))
+            // スライドノートの要素であり、タッチ終了時判定時間が負の値で、ノートの範囲内であればそのときの判定を返す
+            if (isSlideNote && touchType == 4 && (diffTime < 0) && Touched(posX))
             {
                 Remove();
                 judged = true;
                 return judgementType;
             }
-            // タッチ開始かつノートの範囲内であれば判定する
-            /*
-            if (touchType == 1 && Touched(posX))
+
+            // タッチ開始 or 途中であり、判定時間が正の値で、ノートの範囲内であれば判定する
+            if ((touchType == 1 || touchType == 2 || touchType == 3) && (diffTime >= -0.008f) && Touched(posX))
             {
                 Remove();
                 judged = true;
                 return judgementType;
             }
-            */
+
             return JudgementType.None;
         }
         #endregion

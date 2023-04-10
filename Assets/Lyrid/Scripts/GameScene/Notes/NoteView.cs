@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DG.Tweening;
 using Lyrid.GameScene.Charts;
 using Lyrid.GameScene.Lanes;
 using static Lyrid.GameScene.GameSceneConsts;
@@ -161,7 +162,9 @@ namespace Lyrid.GameScene.Notes
         /// </summary>
         public void Remove()
         {
-            gameObject.SetActive(false);
+            noteFrameObj.SetActive(false);
+            noteColorObj.SetActive(false);
+            DOVirtual.DelayedCall (0.1f, () => gameObject.SetActive(false), false);
         }
         #endregion
     }

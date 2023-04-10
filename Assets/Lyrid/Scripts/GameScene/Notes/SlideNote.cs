@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DG.Tweening;
 using Lyrid.GameScene.Charts;
 using Lyrid.GameScene.Audio;
 
@@ -9,7 +10,7 @@ namespace Lyrid.GameScene.Notes
     /// <summary>
     /// スライドノートを管理するクラス
     /// </summary>
-    public class SlideNote : IMovable, IJudgeable
+    public class SlideNote
     {
         #region Field
         /// <summary> 生成された時間 </summary>
@@ -35,7 +36,12 @@ namespace Lyrid.GameScene.Notes
         /// <summary> オブジェクトプールのインスタンス </summary>
         private ObjectPool pool;
         /// <summary> JudgementManager のインスタンス </summary>
-        JudgementManager judgementManager;
+        private JudgementManager judgementManager;
+        #endregion
+
+        #region Property
+        /// <summary> 判定されたかどうか </summary>
+        public bool judged { get; set; }
         #endregion
 
         #region Constructor
@@ -45,19 +51,25 @@ namespace Lyrid.GameScene.Notes
         /// <param name="movementManager"> MovementManager のインスタンス </param>
         /// <param name="judgementManager"> JudgementManager のインスタンス </param>
         public SlideNote(
-            float generatedTime, List<float> judgementTimeList, List<NoteParam> noteParamList,
-            MovementManager movementManager, JudgementManager judgementManager
-        )
+            float generatedTime,
+            List<float> judgementTimeList,
+            List<NoteParam> noteParamList,
+            MovementManager movementManager,
+            JudgementManager judgementManager)
         {
             this.generatedTime = generatedTime;
             this.judgementTimeList = judgementTimeList;
             this.noteParamList = noteParamList;
             this.judgementManager = judgementManager;
+            judged = false;
+
             // ノート間の判定時間の差分の逆数を計算
             for (int i = 0; i < judgementTimeList.Count - 1; i++)
             {
                 judgementTimeDiffInverseList.Add(1.0f / (judgementTimeList[i + 1] - judgementTimeList[i]));
             }
+
+            // ノートを生成
             pool = GameObject.FindWithTag("SlideNoteLineObjectPool").GetComponent<ObjectPool>();
             GenerateNotes();
             for (int i = 0; i < noteList.Count; i++)
@@ -96,24 +108,33 @@ namespace Lyrid.GameScene.Notes
         /// ノートを判定するメソッド
         /// </summary>
         /// <param name="time"> 判定時間 </param>
-        /// <param name="touchType"> タッチの種類 </param>
-        /// <param name="posX"> タッチ位置 </param>
+        /// <param name="touchTypeList"> タッチの種類のリスト </param>
+        /// <param name="posXList"> タッチ位置のリスト </param>
         /// <returns> 判定の種類 </returns>
-        public JudgementType Judge(float time, int touchType, float posX)
+        public JudgementType Judge(float time, IReadOnlyList<int> touchTypeList, IReadOnlyList<float> posXList)
         {
-            // 先頭ノートが判定済みかつ末尾が未判定の場合は、ダミーノートの上をなぞっていなければコンボを切る
-            if (noteList[0].judged && !noteList[noteList.Count - 1].judged && dummyNote != null)
+            // 先頭ノートが判定済みで、先頭の判定時間を超え、かつ末尾が未判定の場合に判定
+            if (noteList[0].judged && time > judgementTimeList[0]  && !noteList[noteList.Count - 1].judged)
             {
-                if (dummyNotePressed && !dummyNote.Touched(posX))
+                // 今回のフレームでダミーノートが押されているかどうか
+                bool dummyNotePressedInThisFrame = false;
+                for (int i = 0; i < touchTypeList.Count; i++)
                 {
+                    int touchType = touchTypeList[i];
+                    float posX = posXList[i];
+                    if ((touchType == 1 || touchType == 2 || touchType == 3) && dummyNote != null && dummyNote.Touched(posX))
+                    {
+                        dummyNotePressedInThisFrame = true;
+                    }
+                }
+
+                // 押されていなければ Miss を返す
+                if (dummyNotePressed && !dummyNotePressedInThisFrame)
+                {
+                    judged = true;
                     dummyNotePressed = false;
                     return JudgementType.Miss;
                 }
-            }
-            // 末尾が判定済みなら Judged を返す
-            if (noteList[noteList.Count - 1].judged)
-            {
-                return JudgementType.Judged;
             }
             return JudgementType.None;
         }
@@ -123,16 +144,17 @@ namespace Lyrid.GameScene.Notes
         /// </summary>
         private void GenerateNotes()
         {
-            // 構成要素数
-            int size = judgementTimeList.Count;
             // 先頭のノートを生成
             TapNote tapNote = new TapNote(generatedTime, judgementTimeList[0], noteParamList[0], true);
             noteList.Add((Note)tapNote);
             noteTransformList.Add(tapNote.view.gameObject.transform);
+
             // 残りのノートを生成
+            int size = judgementTimeList.Count;
             for (int i = 1; i < size; i++)
             {
                 int connectionType = noteParamList[i].connectionType;
+
                 // ノートを表示する場合
                 if (connectionType == 0 || connectionType == 1)
                 {
@@ -144,16 +166,18 @@ namespace Lyrid.GameScene.Notes
                 // ノートを非表示にする場合
                 else if (connectionType == 2)
                 {
-                    noteParamList[i].type = ElementType.None;
-                    noteParamList[i].var_4 = judgementTimeList[0];
-                    SwipeNote swipeNote = new SwipeNote(generatedTime, judgementTimeList[i], noteParamList[i], true);
+                    NoteParam noteParamCopy = new NoteParam();
+                    noteParamCopy.type = ElementType.None;
+                    noteParamCopy.laneNum = noteParamList[i].laneNum;
+                    noteParamCopy.var_1 = noteParamList[i].var_1;
+                    noteParamCopy.var_2 = noteParamList[i].var_2;
+                    noteParamCopy.var_3 = noteParamList[i].var_3;
+                    noteParamCopy.var_4 = judgementTimeList[0];
+                    noteParamCopy.connectionType = noteParamList[i].connectionType;
+                    SwipeNote swipeNote = new SwipeNote(generatedTime, judgementTimeList[i], noteParamCopy, true);
                     swipeNote.judged = true;
                     noteList.Add((Note)swipeNote);
                     noteTransformList.Add(swipeNote.view.gameObject.transform);
-                }
-                else
-                {
-                    Debug.Assert(false);
                 }
             }
             // ラインを生成
@@ -203,6 +227,7 @@ namespace Lyrid.GameScene.Notes
                     if (dummyNotePressed)
                     {
                         judgementManager.AddJudgement(JudgementType.Perfect);
+                        judged = true;
                         dummyNotePressed = false;
                     }
                 }
@@ -226,6 +251,7 @@ namespace Lyrid.GameScene.Notes
         {
             for (int i = 0; i < noteList.Count; i++)
             {
+                noteList[i].isSlideNote = false;
                 noteList[i].view.Remove();
             }
             for (int i = 0; i < slideNoteLineViewList.Count; i++)

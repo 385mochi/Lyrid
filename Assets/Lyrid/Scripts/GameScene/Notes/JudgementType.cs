@@ -13,7 +13,6 @@ namespace Lyrid.GameScene.Notes
         Good,       // 精度: 中
         Bad,        // 精度: 低
         Miss,       // ミス
-        Judged,     // 判定済み
         None        // なにもしない
     }
 }

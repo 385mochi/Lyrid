@@ -23,7 +23,7 @@ namespace Lyrid.GameScene
     {
         #region Field
         /// <summary> オートプレイかどうか </summary>
-        [SerializeField] bool audioPlay;
+        [SerializeField] bool autoPlay;
         /// <summary> 譜面の csv ファイル </summary>
         [SerializeField] private TextAsset testCsvFile;
         /// <summary> 音源の AudioSource </summary>
@@ -78,8 +78,8 @@ namespace Lyrid.GameScene
                 // 各 Manager を Update
                 touchInputManager.ManagedUpdate();
                 notesManager.ManagedUpdate(time);
-                movementManager.ManagedUpdate(time);
                 judgementManager.ManagedUpdate(time);
+                movementManager.ManagedUpdate(time);
             }
         }
 
@@ -108,7 +108,7 @@ namespace Lyrid.GameScene
             touchInputManager = new TouchInputManager();
             movementManager = new MovementManager();
             scoreManager = new ScoreManager(chart.totalJudgementTargetsNum);
-            judgementManager = new JudgementManager(audioManager, scoreManager, touchInputManager, audioPlay);
+            judgementManager = new JudgementManager(audioManager, scoreManager, touchInputManager, autoPlay);
             notesManager = new NotesManager(chart, movementManager, judgementManager);
 
             // 状態を更新

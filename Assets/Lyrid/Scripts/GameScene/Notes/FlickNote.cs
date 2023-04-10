@@ -37,21 +37,18 @@ namespace Lyrid.GameScene.Notes
         /// <returns> 判定の種類 </returns>
         public override JudgementType Judge(float time, int touchType, float posX)
         {
-            // 判定済みであれば Judged を返す
-            if (judged)
-            {
-                return JudgementType.Judged;
-            }
             // 差分時間
             float diffTime = time - judgementTime;
             // 差分時間から判定を取得
             JudgementType judgementType = GetJudgement(diffTime);
-            // None または Judged であればそのまま返す
-            if (judgementType == JudgementType.None || judgementType == JudgementType.Judged)
+
+            // 判定済み、または判定が None であれば None を返す
+            if (judged || judgementType == JudgementType.None)
             {
-               return judgementType;
+               return JudgementType.None;
             }
-            // touchType が 0 かつ Miss 判定であればそれを返す
+
+            // touchType が 0 かつ Miss 判定であれば Miss を返す
             if (touchType == 0 && judgementType == JudgementType.Miss)
             {
                 Remove();
@@ -68,6 +65,7 @@ namespace Lyrid.GameScene.Notes
                 firstJudgementType = judgementType;
                 return JudgementType.None;
             }
+
             // 既にタッチされた状態で、タッチが移動中であれば初回タッチ時の判定を返す
             if (touched && touchType == 2)
             {
@@ -75,6 +73,7 @@ namespace Lyrid.GameScene.Notes
                 judged = true;
                 return firstJudgementType;
             }
+
             return JudgementType.None;
         }
         #endregion

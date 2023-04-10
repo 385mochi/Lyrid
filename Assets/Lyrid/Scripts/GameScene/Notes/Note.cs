@@ -9,13 +9,11 @@ namespace Lyrid.GameScene.Notes
     /// <summary>
     /// ノートの抽象クラス
     /// </summary>
-    public abstract class Note : IMovable, IJudgeable
+    public abstract class Note
     {
         #region Field
         /// <summary> (判定時間 - 生成時間) の逆数 </summary>
         protected float inverseTime;
-        /// <summary> スライドノートかどうか </summary>
-        private bool isSlideNote;
         #endregion
 
         #region Property
@@ -25,6 +23,8 @@ namespace Lyrid.GameScene.Notes
         public NoteView view { get; protected set; }
         /// <summary> 判定されたかどうか </summary>
         public bool judged { get; set; }
+        /// <summary> スライドノートかどうか </summary>
+        public bool isSlideNote { get; set; }
         /// <summary> ノートのパラメータ </summary>
         public NoteParam noteParam { get; private set; }
         #endregion
@@ -40,6 +40,7 @@ namespace Lyrid.GameScene.Notes
             this.isSlideNote = isSlideNote;
             this.noteParam = noteParam;
             inverseTime = 1.0f / (judgementTime - generatedTime);
+
             // オブジェクトを生成し、初期化
             GameObject noteObj = GameObject.FindWithTag("NoteObjectPool").GetComponent<ObjectPool>().GetObject();
             view = noteObj.GetComponent<NoteView>();
@@ -60,12 +61,9 @@ namespace Lyrid.GameScene.Notes
             view.Move((judgementTime - time) * inverseTime);
             if (isSlideNote)
             {
-                return view.gameObject.activeSelf;
+                return true;
             }
-            else
-            {
-                return !judged;
-            }
+            return !judged;
         }
 
         /// <summary>
@@ -90,7 +88,7 @@ namespace Lyrid.GameScene.Notes
         /// <summary>
         /// View を削除するメソッド
         /// </summary>
-        protected void Remove()
+        public void Remove()
         {
             if (isSlideNote)
             {
