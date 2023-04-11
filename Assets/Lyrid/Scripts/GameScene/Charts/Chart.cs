@@ -49,7 +49,7 @@ namespace Lyrid.GameScene.Charts
             notesData = new List<NoteParam>();
             timeData = new List<float>();
             slideNoteIndexList = new List<List<int>>();
-            initSpeed = 5.0f;
+            initSpeed = 8.0f;
             maxLaneNum = 7;
             laneWidth = 1.0f;
             setLaneVisible = true;

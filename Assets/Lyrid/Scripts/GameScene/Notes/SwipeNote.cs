@@ -58,7 +58,7 @@ namespace Lyrid.GameScene.Notes
             }
 
             // タッチ開始 or 途中であり、判定時間が正の値で、ノートの範囲内であれば判定する
-            if ((touchType == 1 || touchType == 2 || touchType == 3) && (diffTime >= -0.008f) && Touched(posX))
+            if ((touchType == 1 || touchType == 2 || touchType == 3 || touchType == 4) && (diffTime >= -0.008f) && Touched(posX))
             {
                 Remove();
                 judged = true;

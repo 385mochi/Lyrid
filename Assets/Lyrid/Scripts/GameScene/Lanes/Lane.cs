@@ -18,10 +18,6 @@ namespace Lyrid.GameScene.Lanes
         [SerializeField] private LaneLight laneLight;
         /// <summary> レーンのエフェクトのオブジェクト </summary>
         [SerializeField] private LaneEffectLight laneEffectLight;
-        /// <summary> DOTween のための Tweener インスタンス (Move 用) </summary>
-        private Tweener tweenerMove;
-        /// <summary> DOTween のための Tweener インスタンス (Scale 用) </summary>
-        private Tweener tweenerScale;
         #endregion
 
         #region Methods
@@ -63,14 +59,9 @@ namespace Lyrid.GameScene.Lanes
         {
             if (option > 0)
             {
-                if (tweenerMove != null)
-                {
-                    tweenerMove.Kill();
-                }
-                tweenerMove = gameObject.transform.DOMoveX(posX, t)
+                gameObject.transform.DOMoveX(posX, t)
                 .SetDelay(delay)
-                .SetEase(GetEaseType(option))
-                .OnComplete(() => {tweenerMove = null;});
+                .SetEase(GetEaseType(option));
             }
         }
 
@@ -85,14 +76,9 @@ namespace Lyrid.GameScene.Lanes
         {
             if (option > 0)
             {
-                if (tweenerScale != null)
-                {
-                    tweenerScale.Kill();
-                }
                 gameObject.transform.DOScaleX(scale, t)
                 .SetDelay(delay)
-                .SetEase(GetEaseType(option))
-                .OnComplete(() => {tweenerScale = null;});
+                .SetEase(GetEaseType(option));
             }
         }
         #endregion

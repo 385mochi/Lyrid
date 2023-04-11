@@ -42,7 +42,7 @@ namespace Lyrid.GameScene.Notes
             inverseTime = 1.0f / (judgementTime - generatedTime);
 
             // オブジェクトを生成し、初期化
-            GameObject noteObj = GameObject.FindWithTag("NoteObjectPool").GetComponent<ObjectPool>().GetObject();
+            GameObject noteObj = GameObject.FindWithTag("NotePool").GetComponent<ObjectPool>().GetObject();
             view = noteObj.GetComponent<NoteView>();
             view.Init(generatedTime, judgementTime, noteParam, isSlideNote);
             judged = false;

@@ -5,8 +5,9 @@ TagManager:
   serializedVersion: 2
   tags:
   - Lanes
-  - NoteObjectPool
-  - SlideNoteLineObjectPool
+  - NotePool
+  - SlideNoteLinePool
+  - NoteLinePool
   layers:
   - Default
   - TransparentFX

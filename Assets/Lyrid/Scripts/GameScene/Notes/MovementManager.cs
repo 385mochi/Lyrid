@@ -6,7 +6,7 @@ using Lyrid.GameScene.Charts;
 namespace Lyrid.GameScene.Notes
 {
     /// <summary>
-    /// ノーツ移動を管理するクラス
+    /// ノートの移動を管理するクラス
     /// </summary>
     public class MovementManager
     {

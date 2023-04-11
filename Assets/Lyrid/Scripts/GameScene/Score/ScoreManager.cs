@@ -84,7 +84,7 @@ namespace Lyrid.GameScene.Score
                     scoreView.UpdateScore(score);
                     chainView.UpdateChain(chain, allPerfect);
                     judgementView.UpdateJudgement(JudgementType.Perfect);
-                    Debug.Log($"判定: <color=orange>{judgementType}</color>");
+                    // Debug.Log($"判定: <color=orange>{judgementType}</color>");
                     break;
                 case JudgementType.Great:
                     chain++;
@@ -94,7 +94,7 @@ namespace Lyrid.GameScene.Score
                     scoreView.UpdateScore(score);
                     chainView.UpdateChain(chain, allPerfect);
                     judgementView.UpdateJudgement(JudgementType.Great);
-                    Debug.Log($"判定: <color=yellow>{judgementType}</color>");
+                    // Debug.Log($"判定: <color=yellow>{judgementType}</color>");
                     break;
                 case JudgementType.Good:
                     chain = 0;
@@ -103,7 +103,7 @@ namespace Lyrid.GameScene.Score
                     scoreView.UpdateScore(score);
                     chainView.UpdateChain(chain, allPerfect);
                     judgementView.UpdateJudgement(JudgementType.Good);
-                    Debug.Log($"判定: <color=green>{judgementType}</color>");
+                    // Debug.Log($"判定: <color=green>{judgementType}</color>");
                     break;
                 case JudgementType.Bad:
                     chain = 0;
@@ -112,14 +112,14 @@ namespace Lyrid.GameScene.Score
                     scoreView.UpdateScore(score);
                     chainView.UpdateChain(chain, allPerfect);
                     judgementView.UpdateJudgement(JudgementType.Bad);
-                    Debug.Log($"判定: <color=cyan>{judgementType}</color>");
+                    // Debug.Log($"判定: <color=cyan>{judgementType}</color>");
                     break;
                 case JudgementType.Miss:
                     chain = 0;
                     allPerfect = false;
                     chainView.UpdateChain(chain, allPerfect);
                     judgementView.UpdateJudgement(JudgementType.Miss);
-                    Debug.Log($"判定: <color=blue>{judgementType}</color>");
+                    // Debug.Log($"判定: <color=blue>{judgementType}</color>");
                     break;
             }
 

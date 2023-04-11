@@ -24,8 +24,6 @@ namespace Lyrid.GameScene.Notes
         private float margin = 0.5f;
         /// <summary> 初期 z 座標 </summary>
         private float initPosZ;
-        /// <summary> transform キャッシュ </summary>
-        private Transform tfCache;
         /// <summary> レーンに追従するかどうか </summary>
         private bool followLane = true;
         /// <summary> 追従するレーンの transform </summary>
@@ -33,6 +31,8 @@ namespace Lyrid.GameScene.Notes
         #endregion
 
         #region Property
+        /// <summary> transform キャッシュ </summary>
+        public Transform tfCache { get; private set; }
         /// <summary> ノートの幅 </summary>
         public float width { get; private set; }
         #endregion

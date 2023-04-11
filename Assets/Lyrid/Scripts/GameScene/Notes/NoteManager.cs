@@ -8,9 +8,9 @@ using Lyrid.GameScene.Lanes;
 namespace Lyrid.GameScene.Notes
 {
     /// <summary>
-    /// ノーツを生成・管理するクラス
+    /// ノートを生成するクラス
     /// </summary>
-    public class NotesManager
+    public class NoteManager
     {
         #region Field
         /// <summary> 生成時間のリストのインデックス </summary>
@@ -27,6 +27,8 @@ namespace Lyrid.GameScene.Notes
         private MovementManager movementManager;
         /// <summary> JudgementManager のインスタンス </summary>
         private JudgementManager judgementManager;
+        /// <summary> NoteLineManager のインスタンス </summary>
+        private NoteLineManager noteLineManager;
         /// <summary> LanesManager のインスタンス </summary>
         private LanesManager lanesManager;
         #endregion
@@ -35,14 +37,20 @@ namespace Lyrid.GameScene.Notes
         /// <param name="chart"> 譜面クラスのインスタンス </param>
         /// <param name="movementManager"> MovementManager のインスタンス </param>
         /// <param name="judgementManager"> JudgementManager のインスタンス </param>
-        public NotesManager(Chart chart, MovementManager movementManager, JudgementManager judgementManager)
+        /// <param name="noteLineManager"> NoteLineManager のインスタンス </param>
+        public NoteManager(
+            Chart chart,
+            MovementManager movementManager,
+            JudgementManager judgementManager,
+            NoteLineManager noteLineManager)
         {
             this.chart = chart;
+            this.movementManager = movementManager;
+            this.judgementManager = judgementManager;
+            this.noteLineManager = noteLineManager;
             speed = chart.initSpeed;
             timeDataIndex = 0;
             slideNoteIndex = 0;
-            this.movementManager = movementManager;
-            this.judgementManager = judgementManager;
             lanesManager = GameObject.Find("Lanes").GetComponent<LanesManager>();
         }
         #endregion
@@ -57,7 +65,7 @@ namespace Lyrid.GameScene.Notes
             // index を進めながら、生成する時間に到達したらノーツを生成する
             while (
                 timeDataIndex < chart.timeData.Count &&
-                chart.timeData[timeDataIndex] <= time + (10 - speed) * 0.5f
+                chart.timeData[timeDataIndex] <= time + (10.1f - speed) * 0.5f
             )
             {
                 GenerateNote(time, timeDataIndex);
@@ -92,16 +100,19 @@ namespace Lyrid.GameScene.Notes
                     TapNote tapNote = new TapNote(generatedTime, judgementTime, noteParam, false);
                     movementManager.AddTarget(tapNote);
                     judgementManager.AddTarget(tapNote);
+                    noteLineManager.AddNote(tapNote);
                     break;
                 case ElementType.Swipe:
                     SwipeNote swipeNote = new SwipeNote(generatedTime, judgementTime, noteParam, false);
                     movementManager.AddTarget(swipeNote);
                     judgementManager.AddTarget(swipeNote);
+                    noteLineManager.AddNote(swipeNote);
                     break;
                 case ElementType.Flick:
                     FlickNote flickNote = new FlickNote(generatedTime, judgementTime, noteParam, false);
                     movementManager.AddTarget(flickNote);
                     judgementManager.AddTarget(flickNote);
+                    noteLineManager.AddNote(flickNote);
                     break;
                 case ElementType.Slide:
                     // slideNoteIndexList[slideNoteIndex] の最初のインデックスでなければ何もしない
@@ -118,7 +129,14 @@ namespace Lyrid.GameScene.Notes
                         judgementTimeList.Add(chart.timeData[chart.slideNoteIndexList[slideNoteIndex][i]]);
                         noteParamList.Add(chart.notesData[chart.slideNoteIndexList[slideNoteIndex][i]]);
                     }
-                    SlideNote slideNote = new SlideNote(generatedTime, judgementTimeList, noteParamList, movementManager, judgementManager);
+                    SlideNote slideNote = new SlideNote(
+                        generatedTime,
+                        judgementTimeList,
+                        noteParamList,
+                        movementManager,
+                        judgementManager,
+                        noteLineManager
+                    );
                     movementManager.AddTarget(slideNote);
                     judgementManager.AddTarget(slideNote);
                     slideNoteIndex++;

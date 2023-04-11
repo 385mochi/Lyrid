@@ -50,8 +50,10 @@ namespace Lyrid.GameScene
         private JudgementManager judgementManager;
         /// <summary> ScoreManager のインスタンス </summary>
         private ScoreManager scoreManager;
-        /// <summary> NotesManager のインスタンス </summary>
-        private NotesManager notesManager;
+        /// <summary> NoteManager のインスタンス </summary>
+        private NoteManager noteManager;
+        /// <summary> NoteLineManager のインスタンス </summary>
+        private NoteLineManager noteLineManager;
         /// <summary> GameScene の状態を表す列挙型 </summary>
         private enum Status { Start, Playing, End }
         /// <summary> GameScene の状態 </summary>
@@ -71,11 +73,13 @@ namespace Lyrid.GameScene
                 // AudioManager を Update し、現在の再生時間を取得
                 audioManager.ManagedUpdate();
                 float time = audioManager.time;
+
                 // 各 Manager を Update
                 touchInputManager.ManagedUpdate();
                 judgementManager.ManagedUpdate(time);
                 movementManager.ManagedUpdate(time);
-                notesManager.ManagedUpdate(time);
+                noteManager.ManagedUpdate(time);
+                noteLineManager.ManagedUpdate();
             }
         }
 
@@ -111,7 +115,8 @@ namespace Lyrid.GameScene
             movementManager = new MovementManager();
             scoreManager = new ScoreManager(chart.totalJudgementTargetsNum);
             judgementManager = new JudgementManager(audioManager, scoreManager, touchInputManager, autoPlay);
-            notesManager = new NotesManager(chart, movementManager, judgementManager);
+            noteLineManager = new NoteLineManager();
+            noteManager = new NoteManager(chart, movementManager, judgementManager, noteLineManager);
 
             // ロード画像
             Image frontImage = frontImageObj.GetComponent<Image>();
@@ -128,7 +133,8 @@ namespace Lyrid.GameScene
                 color => frontImage.color = color,
                 0.0f, // 目標値
                 0.2f  // 所要時間
-            ).SetEase(GetEaseType(1)).SetDelay(1.0f).OnComplete(() => {
+            ).SetEase(GetEaseType(1)).SetDelay(1.0f).OnComplete(() =>
+            {
                 frontImageObj.SetActive(false);
             });
 
@@ -160,18 +166,20 @@ namespace Lyrid.GameScene
                 color => frontImage.color = color,
                 1.0f, // 目標値
                 0.2f  // 所要時間
-            ).SetEase(GetEaseType(1)).OnComplete(() => {
+            ).SetEase(GetEaseType(1)).OnComplete(() =>
+            {
 
                 // オブジェクトプールをリセット
-                GameObject.FindWithTag("NoteObjectPool").GetComponent<ObjectPool>().Reset();
-                GameObject.FindWithTag("SlideNoteLineObjectPool").GetComponent<ObjectPool>().Reset();
+                GameObject.FindWithTag("NotePool").GetComponent<ObjectPool>().Reset();
+                GameObject.FindWithTag("SlideNoteLinePool").GetComponent<ObjectPool>().Reset();
 
                 // 各 Manager をリセット
                 audioManager.Reset();
                 movementManager.Reset();
                 judgementManager.Reset();
                 scoreManager.Reset();
-                notesManager.Reset();
+                noteManager.Reset();
+                noteLineManager.Reset();
                 lanesManager.Reset();
                 touchInputManager.Reset();
 
@@ -190,7 +198,8 @@ namespace Lyrid.GameScene
                     color => frontImage.color = color,
                     0.0f, // 目標値
                     0.2f  // 所要時間
-                ).SetEase(GetEaseType(1)).SetDelay(1.0f).OnComplete(() => {
+                ).SetEase(GetEaseType(1)).SetDelay(1.0f).OnComplete(() =>
+                {
                     frontImageObj.SetActive(false);
                 });
             });

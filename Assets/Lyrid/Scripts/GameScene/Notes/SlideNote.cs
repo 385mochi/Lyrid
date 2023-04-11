@@ -37,6 +37,8 @@ namespace Lyrid.GameScene.Notes
         private ObjectPool pool;
         /// <summary> JudgementManager のインスタンス </summary>
         private JudgementManager judgementManager;
+        /// <summary> NoteLineManager のインスタンス </summary>
+        private NoteLineManager noteLineManager;
         #endregion
 
         #region Property
@@ -50,17 +52,20 @@ namespace Lyrid.GameScene.Notes
         /// <param name="noteParamList"> ノートのパラメータのリスト </param>
         /// <param name="movementManager"> MovementManager のインスタンス </param>
         /// <param name="judgementManager"> JudgementManager のインスタンス </param>
+        /// <param name="noteLineManager"> NoteLineManager のインスタンス </param>
         public SlideNote(
             float generatedTime,
             List<float> judgementTimeList,
             List<NoteParam> noteParamList,
             MovementManager movementManager,
-            JudgementManager judgementManager)
+            JudgementManager judgementManager,
+            NoteLineManager noteLineManager)
         {
             this.generatedTime = generatedTime;
             this.judgementTimeList = judgementTimeList;
             this.noteParamList = noteParamList;
             this.judgementManager = judgementManager;
+            this.noteLineManager = noteLineManager;
             judged = false;
 
             // ノート間の判定時間の差分の逆数を計算
@@ -70,7 +75,7 @@ namespace Lyrid.GameScene.Notes
             }
 
             // ノートを生成
-            pool = GameObject.FindWithTag("SlideNoteLineObjectPool").GetComponent<ObjectPool>();
+            pool = GameObject.FindWithTag("SlideNoteLinePool").GetComponent<ObjectPool>();
             GenerateNotes();
             for (int i = 0; i < noteList.Count; i++)
             {
@@ -146,7 +151,8 @@ namespace Lyrid.GameScene.Notes
         {
             // 先頭のノートを生成
             TapNote tapNote = new TapNote(generatedTime, judgementTimeList[0], noteParamList[0], true);
-            noteList.Add((Note)tapNote);
+            noteList.Add(tapNote);
+            noteLineManager.AddNote(tapNote);
             noteTransformList.Add(tapNote.view.gameObject.transform);
 
             // 残りのノートを生成
@@ -160,7 +166,8 @@ namespace Lyrid.GameScene.Notes
                 {
                     noteParamList[i].var_4 = judgementTimeList[0];
                     SwipeNote swipeNote = new SwipeNote(generatedTime, judgementTimeList[i], noteParamList[i], true);
-                    noteList.Add((Note)swipeNote);
+                    noteList.Add(swipeNote);
+                    noteLineManager.AddNote(noteList[i]);
                     noteTransformList.Add(swipeNote.view.gameObject.transform);
                 }
                 // ノートを非表示にする場合
