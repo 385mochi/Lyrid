@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using DG.Tweening;
 using Lyrid.GameScene;
 
-namespace Lyrid.Common
+namespace Lyrid.GameScene.UI
 {
     /// <summary>
     /// リプレイボタンのクラス

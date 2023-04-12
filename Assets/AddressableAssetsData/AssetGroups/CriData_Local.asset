@@ -29,6 +29,10 @@ MonoBehaviour:
     m_Address: CriAddressables/tapsound.acb
     m_ReadOnly: 1
     m_SerializedLabels: []
+  - m_GUID: e559e34f88788424f9023092d8e10de8
+    m_Address: CriAddressables/saisyuu_koufukuron.acb
+    m_ReadOnly: 1
+    m_SerializedLabels: []
   m_ReadOnly: 1
   m_Settings: {fileID: 11400000, guid: 2bb42c8f1f72dae40a69d1fcf36ad966, type: 2}
   m_SchemaSet:

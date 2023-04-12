@@ -41,8 +41,8 @@ namespace Lyrid.GameScene.Notes
                return JudgementType.None;
             }
 
-            // touchType が 0 かつ Miss 判定であれば Miss を返す
-            if (touchType == 0 && judgementType == JudgementType.Miss)
+            // Miss 判定であれば Miss を返す
+            if (judgementType == JudgementType.Miss)
             {
                 Remove();
                 judged = true;

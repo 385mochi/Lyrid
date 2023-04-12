@@ -17,9 +17,9 @@ namespace Lyrid.GameScene
 
         // ノーツの色
         public static readonly Color32 TAP_NOTE_COLOR = new Color32(80, 255, 255, 200);
-        public static readonly Color32 SWIPE_NOTE_COLOR = new Color32(230, 255, 80, 200);
-        public static readonly Color32 FLICK_NOTE_COLOR = new Color32(210, 80, 255, 200);
-        public static readonly Color32 SLIDE_NOTE_COLOR = new Color32(140, 0, 255, 200);
+        public static readonly Color32 SWIPE_NOTE_COLOR = new Color32(255, 255, 255, 200);
+        public static readonly Color32 FLICK_NOTE_COLOR = new Color32(140, 0, 255, 200);
+        public static readonly Color32 SLIDE_NOTE_COLOR = new Color32(230, 180, 80, 200);
 
         // レーンの高さ
         public const float LANE_HEIGHT = 20.0f;

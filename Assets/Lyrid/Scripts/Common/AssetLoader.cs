@@ -19,7 +19,7 @@ namespace Lyrid.Common
 
         #region Methods
         /// <summary>
-        /// 音源 (acb ファイル) をロードするメソッド
+        /// 指定された音源 (acb ファイル) をロードするメソッド
         /// </summary>
         /// <param name="key"> アドレス名 </param>
         /// <returns> acb インスタンス </returns>
@@ -35,6 +35,28 @@ namespace Lyrid.Common
                 var acbAsset = await Addressables.LoadAssetAsync<CriAtomAcbAsset>(key).Task;
                 acbAsset.LoadImmediate();
                 return acbAsset.Handle;
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// 指定された Sprite をロードするメソッド
+        /// </summary>
+        /// <param name="key"> アドレス名 </param>
+        /// <returns> 取得した Sprite </returns>
+        public async Task<Sprite> LoadSpriteAsync(string key)
+        {
+            Debug.Log($"key:{key}");
+
+            // ファイルが存在するかチェック
+            var location = Addressables.LoadResourceLocationsAsync(key);
+            var locationResult = await location.Task;
+
+            // 存在すればロード
+            if (locationResult.Count != 0)
+            {
+                var sprite = await Addressables.LoadAssetAsync<Sprite>(key).Task;
+                return sprite;
             }
             return null;
         }

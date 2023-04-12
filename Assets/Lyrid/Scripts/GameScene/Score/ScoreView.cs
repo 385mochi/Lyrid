@@ -30,7 +30,7 @@ namespace Lyrid.GameScene.Score
             {
                 tweener.Kill();
             }
-            gameObject.transform.localScale = new Vector3(0.8f, 0.8f, 0.8f);
+            gameObject.transform.localScale = new Vector3(1.1f, 1.1f, 1.1f);
             tweener = gameObject.transform.DOScale(
                 new Vector3(1, 1, 1), // スケール値
                 0.2f                  // 演出時間

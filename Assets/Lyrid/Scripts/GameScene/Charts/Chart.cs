@@ -104,7 +104,7 @@ namespace Lyrid.GameScene.Charts
                             index++;
                             break;
                         case "#OFFSET":
-                            offsetTime = int.Parse(csvData[index][1]);
+                            offsetTime = float.Parse(csvData[index][1]);
                             index++;
                             break;
                         case "#BPM":

@@ -27,11 +27,13 @@ namespace Lyrid.GameScene.Audio
         /// <summary> 再生中かどうか </summary>
         private bool nowPlaying = false;
         /// <summary> 実際の楽曲再生位置を取得する間隔 </summary>
-        private int samplingFlame = 5;
+        private int samplingFlame = 3;
         /// <summary> samplingFlame のためのカウンタ </summary>
         private int samplingFlameCounter = 0;
         /// <summary> 時間の初期値 </summary>
         private float initTime;
+        /// <summary> 今フレームにタップ音が鳴らされたかどうか <summary>
+        private bool taoSoundPlayedInThisFrame;
         #endregion
 
         #region Property
@@ -63,7 +65,7 @@ namespace Lyrid.GameScene.Audio
             // deltaTime を取得
             float deltaTime = Time.deltaTime;
             // time が 0 になるまで進める
-            if (!nowPlaying)
+            if (!nowPlaying && time < 0)
             {
                 time += deltaTime;
                 if (time >= 0)
@@ -72,7 +74,7 @@ namespace Lyrid.GameScene.Audio
                     nowPlaying = true;
                 }
             }
-            else
+            else if (musicPlayer.GetStatus() != CriAtomExPlayer.Status.PlayEnd)
             {
                 // samplingFrame 毎に実際の楽曲時間をサンプリングする
                 if (samplingFlameCounter++ >= samplingFlame)
@@ -85,11 +87,17 @@ namespace Lyrid.GameScene.Audio
                     time += deltaTime;
                 }
             }
+
+            taoSoundPlayedInThisFrame = false;
         }
 
         public void PlayTapSound()
         {
-            tapSoundPlayer.Start();
+            if (!taoSoundPlayedInThisFrame)
+            {
+                tapSoundPlayer.Start();
+                taoSoundPlayedInThisFrame = true;
+            }
         }
 
         public void Reset()

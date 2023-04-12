@@ -151,9 +151,6 @@ namespace Lyrid.GameScene.Notes
                     noteFrameObj.SetActive(false);
                     noteColorObj.SetActive(false);
                     break;
-                default:
-                    Debug.Assert(false);
-                    break;
             }
         }
 

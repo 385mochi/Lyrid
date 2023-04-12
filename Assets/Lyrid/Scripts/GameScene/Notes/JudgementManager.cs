@@ -164,8 +164,12 @@ namespace Lyrid.GameScene.Notes
                         // そのほかの場合はそれを判定とする
                         else
                         {
-                            audioManager.PlayTapSound();
-                            lanesManager.lanes[note.noteParam.laneNum].EffectLightUp(note.noteParam.type, note.view.width);
+                            // Miss でなければタップ音 & エフェクト実行
+                            if (judgementType != JudgementType.Miss)
+                            {
+                                audioManager.PlayTapSound();
+                                lanesManager.lanes[note.noteParam.laneNum].EffectLightUp(note.noteParam.type, note.view.width);
+                            }
                             scoreManager.AddScore(judgementType);
                             note.judged = true;
                             break;

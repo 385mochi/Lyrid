@@ -50,7 +50,7 @@ public class LaneEffectLight : MonoBehaviour
         }
         color.a = 200;
         Vector3 scale = gameObject.transform.localScale;
-        scale.x = width;
+        scale.x = width * 0.5f;
         gameObject.transform.localScale = scale;
         laneEffectLight.color = color;
         tweener = DOTween.ToAlpha(

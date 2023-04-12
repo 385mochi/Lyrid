@@ -13,6 +13,7 @@ using Lyrid.GameScene.Input;
 using Lyrid.GameScene.Lanes;
 using Lyrid.GameScene.Notes;
 using Lyrid.GameScene.Score;
+using Lyrid.GameScene.UI;
 
 namespace Lyrid.GameScene
 {
@@ -26,14 +27,18 @@ namespace Lyrid.GameScene
         [SerializeField] bool autoPlay;
         /// <summary> 譜面の csv ファイル </summary>
         [SerializeField] private TextAsset testCsvFile;
-        /// <summary> 音源の AudioSource </summary>
-        [SerializeField] private AudioSource music;
         /// <summary> リセットボタン </summary>
         [SerializeField] private ReplayButton replayButton;
-        /// <summary> リセット中の背景のオブジェクト </summary>
-        [SerializeField] private GameObject frontImageObj;
-        /// <summary> ロード中のアイコン </summary>
-        [SerializeField] private Image loadingIcon;
+        /// <summary> ロード画面 </summary>
+        [SerializeField] private LoadingScreen loadingScreen;
+        /// <summary> 楽曲ジャケット画像のアイコン </summary>
+        [SerializeField] private Image musicIcon;
+        /// <summary> 背景画像 </summary>
+        [SerializeField] private Image backGroundImage;
+        /// <summary> 楽曲名のテキスト </summary>
+        [SerializeField] private Text musicNameText;
+        /// <summary> 作曲者名のテキスト </summary>
+        [SerializeField] private Text composerNameText;
         /// <summary> AssetLoader のインスタンス </summary>
         private AssetLoader assetLoader;
         /// <summary> 譜面のインスタンス </summary>
@@ -54,16 +59,23 @@ namespace Lyrid.GameScene
         private NoteManager noteManager;
         /// <summary> NoteLineManager のインスタンス </summary>
         private NoteLineManager noteLineManager;
+        /// <summary> TimeLine のインスタンス </summary>
+        private TimeLine timeLine;
         /// <summary> GameScene の状態を表す列挙型 </summary>
         private enum Status { Start, Playing, End }
         /// <summary> GameScene の状態 </summary>
         private Status status;
         #endregion
 
+        #region Property
+        /// <summary> 楽曲ジャケット画像 </summary>
+        public Sprite musicImage { get; set; }
+        #endregion
+
         #region Methods
         void OnEnable()
         {
-            Init();
+            Init("saisyuu_koufukuron");
         }
 
         void Update()
@@ -80,23 +92,41 @@ namespace Lyrid.GameScene
                 movementManager.ManagedUpdate(time);
                 noteManager.ManagedUpdate(time);
                 noteLineManager.ManagedUpdate();
+
+                // タイムラインを更新
+                timeLine.UpdateLine(time);
             }
         }
 
         /// <summary>
         /// 初期化メソッド
         /// </summary>
-        private async void Init()
+        public async void Init(string musicName)
         {
             status = Status.Start;
 
-            // 60fps に設定
-            QualitySettings.vSyncCount = 0;
-            Application.targetFrameRate = 60;
-
-            // 楽曲をロード
+            // AssetLoader のインスタンスを生成
             assetLoader = new AssetLoader();
-            CriAtomExAcb music = await assetLoader.LoadAudioAsync("dorekisei_audio");
+
+            // 楽曲名と作曲者の情報を取得
+            string musicNameFormal = "最終幸福論";
+            string composerNameFormal = "∑";
+            musicNameText.text = musicNameFormal;
+            composerNameText.text = composerNameFormal;
+
+            // 楽曲のジャケット画像をロード・設定
+            Sprite musicImage = await assetLoader.LoadSpriteAsync(musicName+"_image");
+            Sprite musicImageBlurred = await assetLoader.LoadSpriteAsync(musicName+"_image_blurred");
+            musicIcon.sprite = musicImage;
+            backGroundImage.sprite = musicImageBlurred;
+
+            // 楽曲をロード・設定
+            CriAtomExAcb music = await assetLoader.LoadAudioAsync($"{musicName}_audio");
+            CriAtomEx.CueInfo cueInfo;
+            music.GetCueInfo(0, out cueInfo);
+            float musicLength = cueInfo.length * 0.001f;
+
+            // タップ音をロード
             CriAtomExAcb tapSound = await assetLoader.LoadAudioAsync("tapsound");
 
             // DOTween を初期化
@@ -118,25 +148,16 @@ namespace Lyrid.GameScene
             noteLineManager = new NoteLineManager();
             noteManager = new NoteManager(chart, movementManager, judgementManager, noteLineManager);
 
-            // ロード画像
-            Image frontImage = frontImageObj.GetComponent<Image>();
+            // タイムラインを取得
+            timeLine = GameObject.Find("TimeLine").GetComponent<TimeLine>();
+            timeLine.SetLength(musicLength);
 
-            // 背景を消す
-            DOTween.ToAlpha(
-                () => loadingIcon.color,
-                color => loadingIcon.color = color,
-                0.0f, // 目標値
-                0.2f  // 所要時間
-            ).SetDelay(1.0f).SetEase(GetEaseType(1));
-            DOTween.ToAlpha(
-                () => frontImage.color,
-                color => frontImage.color = color,
-                0.0f, // 目標値
-                0.2f  // 所要時間
-            ).SetEase(GetEaseType(1)).SetDelay(1.0f).OnComplete(() =>
-            {
-                frontImageObj.SetActive(false);
-            });
+            // ロード画面を非表示にする
+            loadingScreen.SetInvibible();
+
+            // 60fps に設定
+            QualitySettings.vSyncCount = 0;
+            Application.targetFrameRate = 60;
 
             // 状態を更新
             status = Status.Playing;
@@ -147,31 +168,15 @@ namespace Lyrid.GameScene
         /// </summary>
         public void Reset()
         {
-            // 背景画像
-            frontImageObj.SetActive(true);
-            Image frontImage = frontImageObj.GetComponent<Image>();
-
             // 動作しているものを全て Kill
             DOTween.KillAll();
 
-            // 背景でマスクする
-            DOTween.ToAlpha(
-                () => loadingIcon.color,
-                color => loadingIcon.color = color,
-                1.0f, // 目標値
-                0.2f  // 所要時間
-            ).SetEase(GetEaseType(1));
-            DOTween.ToAlpha(
-                () => frontImage.color,
-                color => frontImage.color = color,
-                1.0f, // 目標値
-                0.2f  // 所要時間
-            ).SetEase(GetEaseType(1)).OnComplete(() =>
+            loadingScreen.SetVisible(backGroundImage.sprite).OnComplete(() =>
             {
-
                 // オブジェクトプールをリセット
                 GameObject.FindWithTag("NotePool").GetComponent<ObjectPool>().Reset();
                 GameObject.FindWithTag("SlideNoteLinePool").GetComponent<ObjectPool>().Reset();
+                GameObject.FindWithTag("NoteLinePool").GetComponent<ObjectPool>().Reset();
 
                 // 各 Manager をリセット
                 audioManager.Reset();
@@ -183,25 +188,14 @@ namespace Lyrid.GameScene
                 lanesManager.Reset();
                 touchInputManager.Reset();
 
+                // タイムラインをリセット
+                timeLine.Reset();
+
                 // ボタンの状態を初期化
                 replayButton.Reset();
 
-                // 背景を消す
-                DOTween.ToAlpha(
-                    () => loadingIcon.color,
-                    color => loadingIcon.color = color,
-                    0.0f, // 目標値
-                    0.2f  // 所要時間
-                ).SetDelay(1.0f).SetEase(GetEaseType(1));
-                DOTween.ToAlpha(
-                    () => frontImage.color,
-                    color => frontImage.color = color,
-                    0.0f, // 目標値
-                    0.2f  // 所要時間
-                ).SetEase(GetEaseType(1)).SetDelay(1.0f).OnComplete(() =>
-                {
-                    frontImageObj.SetActive(false);
-                });
+                // ロード画面を非表示にする
+                loadingScreen.SetInvibible();
             });
         }
         #endregion

@@ -25,7 +25,7 @@ public class LaneLight : MonoBehaviour
         {
             tweener.Kill();
         }
-        laneLight.color = new Color(laneLight.color.r, laneLight.color.g, laneLight.color.b, 0.5f);
+        laneLight.color = new Color(laneLight.color.r, laneLight.color.g, laneLight.color.b, 0.2f);
         tweener = DOTween.ToAlpha(
             () => laneLight.color,
             color => laneLight.color = color,

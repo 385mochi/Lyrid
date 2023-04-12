@@ -26,7 +26,7 @@ namespace Lyrid.GameScene.Notes
         /// <summary> 要素数の逆数 </summary>
         private float bezierCurveSizeInverse;
         /// <summary> 描画幅 </summary>
-        private float deltaWidth = 0.1f;
+        private float deltaWidth = 0.6f;
         /// <summary> 自身が持つ SkinnedMeshRenderer </summary>
         private SkinnedMeshRenderer meshRenderer;
         /// <summary> Mesh のインスタンス </summary>

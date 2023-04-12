@@ -55,7 +55,7 @@ namespace Lyrid.GameScene.Notes
             // ノートが 1 個であればラインの始点終点を 0 にする
             if (noteList.Count == 1)
             {
-                view.UpdateLine(new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                view.UpdateLine(new Vector3(0, 0, 0), 0, new Vector3(0, 0, 0), 0);
                 return;
             }
 
@@ -78,7 +78,7 @@ namespace Lyrid.GameScene.Notes
             }
 
             // z 座標が同じであればラインの View を更新
-            view.UpdateLine(leftTf.position, rightTf.position);
+            view.UpdateLine(leftTf.position, leftTf.localScale.x, rightTf.position, rightTf.localScale.x);
         }
 
         public void AddNote(Note note)

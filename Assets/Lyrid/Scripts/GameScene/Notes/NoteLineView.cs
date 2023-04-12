@@ -14,8 +14,10 @@ namespace Lyrid.GameScene.Notes
         #endregion
 
         #region Methods
-        public void UpdateLine(Vector3 left, Vector3 right)
+        public void UpdateLine(Vector3 left, float leftWidth, Vector3 right, float rightWidth)
         {
+            left.x += leftWidth * 0.5f;
+            right.x -= rightWidth * 0.5f;
             lineRenderer.SetPosition(0, left);
             lineRenderer.SetPosition(1, right);
         }
