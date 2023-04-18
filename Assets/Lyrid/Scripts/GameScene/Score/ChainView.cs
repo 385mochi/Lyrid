@@ -50,14 +50,14 @@ namespace Lyrid.GameScene.Score
                 case ChainStatus.Normal:
                     break;
                 case ChainStatus.FullChain:
-                    if (chain < preChain)
+                    if (chain <= preChain)
                     {
                         chainStatus = ChainStatus.Normal;
                         chainText.color = new Color32(255, 255, 255, 200);
                     }
                     break;
                 case ChainStatus.AllPerfect:
-                    if (chain < preChain)
+                    if (chain <= preChain)
                     {
                         chainStatus = ChainStatus.Normal;
                         chainText.color = new Color32(255, 255, 255, 200);

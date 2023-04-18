@@ -14,6 +14,7 @@ using Lyrid.GameScene.Lanes;
 using Lyrid.GameScene.Notes;
 using Lyrid.GameScene.Score;
 using Lyrid.GameScene.UI;
+using Lyrid.ResultScene;
 
 namespace Lyrid.GameScene
 {
@@ -32,13 +33,15 @@ namespace Lyrid.GameScene
         /// <summary> ロード画面 </summary>
         [SerializeField] private LoadingScreen loadingScreen;
         /// <summary> 楽曲ジャケット画像のアイコン </summary>
-        [SerializeField] private Image musicIcon;
+        [SerializeField] private Image musicImage;
         /// <summary> 背景画像 </summary>
         [SerializeField] private Image backGroundImage;
         /// <summary> 楽曲名のテキスト </summary>
         [SerializeField] private Text musicNameText;
         /// <summary> 作曲者名のテキスト </summary>
         [SerializeField] private Text composerNameText;
+        /// <summary> リザルトシーン </summary>
+        [SerializeField] private GameObject resultScene;
         /// <summary> AssetLoader のインスタンス </summary>
         private AssetLoader assetLoader;
         /// <summary> 譜面のインスタンス </summary>
@@ -62,14 +65,9 @@ namespace Lyrid.GameScene
         /// <summary> TimeLine のインスタンス </summary>
         private TimeLine timeLine;
         /// <summary> GameScene の状態を表す列挙型 </summary>
-        private enum Status { Start, Playing, End }
+        private enum Status { Start, Playing, Ended }
         /// <summary> GameScene の状態 </summary>
         private Status status;
-        #endregion
-
-        #region Property
-        /// <summary> 楽曲ジャケット画像 </summary>
-        public Sprite musicImage { get; set; }
         #endregion
 
         #region Methods
@@ -86,6 +84,13 @@ namespace Lyrid.GameScene
                 audioManager.ManagedUpdate();
                 float time = audioManager.time;
 
+                // AudioManager の状態が Ended に変化したら、状態を Ended とする
+                if (audioManager.status == AudioManager.Status.Ended)
+                {
+                    status = Status.Ended;
+                    OnTrackComplete();
+                }
+
                 // 各 Manager を Update
                 touchInputManager.ManagedUpdate();
                 judgementManager.ManagedUpdate(time);
@@ -101,27 +106,29 @@ namespace Lyrid.GameScene
         /// <summary>
         /// 初期化メソッド
         /// </summary>
-        public async void Init(string musicName)
+        public async void Init(string key)
         {
+            // ロード画面を表示させる
+            loadingScreen.SetVisible();
+
+            // 状態を初期化
             status = Status.Start;
 
             // AssetLoader のインスタンスを生成
             assetLoader = new AssetLoader();
 
             // 楽曲名と作曲者の情報を取得
-            string musicNameFormal = "最終幸福論";
-            string composerNameFormal = "∑";
-            musicNameText.text = musicNameFormal;
-            composerNameText.text = composerNameFormal;
+            string musicName = "最終幸福論";
+            string composerName = "∑";
+            musicNameText.text = musicName;
+            composerNameText.text = composerName;
 
             // 楽曲のジャケット画像をロード・設定
-            Sprite musicImage = await assetLoader.LoadSpriteAsync(musicName+"_image");
-            Sprite musicImageBlurred = await assetLoader.LoadSpriteAsync(musicName+"_image_blurred");
-            musicIcon.sprite = musicImage;
-            backGroundImage.sprite = musicImageBlurred;
+            musicImage.sprite = await assetLoader.LoadSpriteAsync($"{key}_image");
+            backGroundImage.sprite = await assetLoader.LoadSpriteAsync($"{key}_image_blurred");
 
             // 楽曲をロード・設定
-            CriAtomExAcb music = await assetLoader.LoadAudioAsync($"{musicName}_audio");
+            CriAtomExAcb music = await assetLoader.LoadAudioAsync($"{key}_audio");
             CriAtomEx.CueInfo cueInfo;
             music.GetCueInfo(0, out cueInfo);
             float musicLength = cueInfo.length * 0.001f;
@@ -152,15 +159,15 @@ namespace Lyrid.GameScene
             timeLine = GameObject.Find("TimeLine").GetComponent<TimeLine>();
             timeLine.SetLength(musicLength);
 
-            // ロード画面を非表示にする
-            loadingScreen.SetInvibible();
-
             // 60fps に設定
             QualitySettings.vSyncCount = 0;
             Application.targetFrameRate = 60;
 
             // 状態を更新
             status = Status.Playing;
+
+            // ロード画面を非表示にする
+            loadingScreen.SetInvisible();
         }
 
         /// <summary>
@@ -168,9 +175,13 @@ namespace Lyrid.GameScene
         /// </summary>
         public void Reset()
         {
-            // 動作しているものを全て Kill
+            // 状態を初期化
+            status = Status.Start;
+
+            // 動作している DOTween を全て Kill
             DOTween.KillAll();
 
+            // ロード画面を表示させる
             loadingScreen.SetVisible(backGroundImage.sprite).OnComplete(() =>
             {
                 // オブジェクトプールをリセット
@@ -195,7 +206,42 @@ namespace Lyrid.GameScene
                 replayButton.Reset();
 
                 // ロード画面を非表示にする
-                loadingScreen.SetInvibible();
+                loadingScreen.SetInvisible();
+
+                // 状態を更新
+                status = Status.Playing;
+            });
+        }
+
+        /// <summary>
+        /// 楽曲の再生終了時の処理を行うメソッド
+        /// </summary>
+        private void OnTrackComplete()
+        {
+            // ロード画面を表示させる
+            loadingScreen.SetVisible(backGroundImage.sprite).OnComplete(() =>
+            {
+                // リザルトシーンを表示
+                resultScene.GetComponent<ResultSceneManager>().Init(
+                    musicImage.sprite,
+                    backGroundImage.sprite,
+                    musicNameText.text,
+                    composerNameText.text,
+                    8,
+                    scoreManager.score,
+                    true,
+                    scoreManager.isFullChain,
+                    scoreManager.isAllPerfect,
+                    scoreManager.perfectNum,
+                    scoreManager.greatNum,
+                    scoreManager.goodNum,
+                    scoreManager.badNum,
+                    scoreManager.missNum,
+                    scoreManager.maxChain,
+                    scoreManager.scoreTargetNum,
+                    scoreManager.accuracy
+                );
+                gameObject.SetActive(false);
             });
         }
         #endregion
