@@ -61,6 +61,14 @@ namespace Lyrid.GameScene.Lanes
             this.laneWidth = laneWidth;
             this.setVisible = setVisible;
 
+            if (laneObjects != null)
+            {
+                foreach (GameObject laneObj in laneObjects)
+                {
+                    Destroy(laneObj);
+                }
+            }
+
             laneObjects = new List<GameObject>();
             laneTransforms = new List<Transform>();
             lanes= new List<Lane>();

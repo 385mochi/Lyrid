@@ -8,6 +8,9 @@ TagManager:
   - NotePool
   - SlideNoteLinePool
   - NoteLinePool
+  - GameScene
+  - ResultScene
+  - AssetLoader
   layers:
   - Default
   - TransparentFX

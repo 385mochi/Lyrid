@@ -6,6 +6,7 @@ using CriWare;
 using CriWare.Assets;
 using DG.Tweening;
 using Lyrid.Common;
+using static Lyrid.Common.CommonConsts;
 using static Lyrid.Common.Easings;
 using Lyrid.GameScene.Audio;
 using Lyrid.GameScene.Charts;
@@ -40,8 +41,13 @@ namespace Lyrid.GameScene
         [SerializeField] private Text musicNameText;
         /// <summary> 作曲者名のテキスト </summary>
         [SerializeField] private Text composerNameText;
+        [SerializeField] private Image diffFrame;
         /// <summary> リザルトシーン </summary>
         [SerializeField] private GameObject resultScene;
+        /// <summary> 難易度の種類 </summary>
+        private Difficulty difficulty;
+        /// <summary> レベル </summary>
+        private int level;
         /// <summary> AssetLoader のインスタンス </summary>
         private AssetLoader assetLoader;
         /// <summary> 譜面のインスタンス </summary>
@@ -71,9 +77,8 @@ namespace Lyrid.GameScene
         #endregion
 
         #region Methods
-        void OnEnable()
+        void Start()
         {
-            Init("saisyuu_koufukuron");
         }
 
         void Update()
@@ -106,7 +111,13 @@ namespace Lyrid.GameScene
         /// <summary>
         /// 初期化メソッド
         /// </summary>
-        public async void Init(string key)
+        public async void Init(
+            string key,
+            string musicName,
+            string composerName,
+            Difficulty diff,
+            int level
+        )
         {
             // ロード画面を表示させる
             loadingScreen.SetVisible();
@@ -114,12 +125,10 @@ namespace Lyrid.GameScene
             // 状態を初期化
             status = Status.Start;
 
-            // AssetLoader のインスタンスを生成
-            assetLoader = new AssetLoader();
+            // AssetLoader のインスタンスを取得
+            assetLoader = GameObject.FindWithTag("AssetLoader").GetComponent<AssetLoader>();
 
             // 楽曲名と作曲者の情報を取得
-            string musicName = "最終幸福論";
-            string composerName = "∑";
             musicNameText.text = musicName;
             composerNameText.text = composerName;
 
@@ -131,10 +140,27 @@ namespace Lyrid.GameScene
             CriAtomExAcb music = await assetLoader.LoadAudioAsync($"{key}_audio");
             CriAtomEx.CueInfo cueInfo;
             music.GetCueInfo(0, out cueInfo);
+            Debug.Log(music);
             float musicLength = cueInfo.length * 0.001f;
 
             // タップ音をロード
             CriAtomExAcb tapSound = await assetLoader.LoadAudioAsync("tapsound");
+
+            // 難易度・レベルを設定
+            this.difficulty = diff;
+            this.level = level;
+            switch (diff)
+            {
+                case Difficulty.Normal:
+                    diffFrame.color = NORMAL_DIFF_COLOR;
+                    break;
+                case Difficulty.Hard:
+                    diffFrame.color = HARD_DIFF_COLOR;
+                    break;
+                case Difficulty.Expert:
+                    diffFrame.color = EXPERT_DIFF_COLOR;
+                    break;
+            }
 
             // DOTween を初期化
             DOTween.Init();
@@ -184,6 +210,9 @@ namespace Lyrid.GameScene
             // ロード画面を表示させる
             loadingScreen.SetVisible(backGroundImage.sprite).OnComplete(() =>
             {
+                // リザルト画面からのリプレイの場合はリザルトシーンを無効にする
+                resultScene.SetActive(false);
+
                 // オブジェクトプールをリセット
                 GameObject.FindWithTag("NotePool").GetComponent<ObjectPool>().Reset();
                 GameObject.FindWithTag("SlideNoteLinePool").GetComponent<ObjectPool>().Reset();
@@ -227,7 +256,8 @@ namespace Lyrid.GameScene
                     backGroundImage.sprite,
                     musicNameText.text,
                     composerNameText.text,
-                    8,
+                    difficulty,
+                    level,
                     scoreManager.score,
                     true,
                     scoreManager.isFullChain,

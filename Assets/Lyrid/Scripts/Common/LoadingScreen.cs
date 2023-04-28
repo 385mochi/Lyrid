@@ -35,10 +35,7 @@ namespace Lyrid.Common
         public Tween SetVisible(Sprite sprite)
         {
             // 既に表示されている場合は何もしない
-            if (isVisible)
-            {
-                return DOVirtual.DelayedCall(0.1f, () => {});
-            }
+            if (isVisible) return DOVirtual.DelayedCall(0.1f, () => {});
 
             isVisible = true;
 
@@ -65,10 +62,7 @@ namespace Lyrid.Common
         public Tween SetVisible()
         {
             // 既に表示されている場合は何もしない
-            if (isVisible)
-            {
-                return DOVirtual.DelayedCall(0, () => {});
-            }
+            if (isVisible) return DOVirtual.DelayedCall(0, () => {});
 
             isVisible = true;
 
@@ -91,10 +85,7 @@ namespace Lyrid.Common
         public Tween SetInvisible()
         {
             // 既に非表示の場合は何もしない
-            if (!isVisible)
-            {
-                return DOVirtual.DelayedCall(0.1f, () => {});
-            }
+            if (!isVisible) return DOVirtual.DelayedCall(0.1f, () => {});
 
             isVisible = false;
 

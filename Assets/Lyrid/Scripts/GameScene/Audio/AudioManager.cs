@@ -77,12 +77,10 @@ namespace Lyrid.GameScene.Audio
             switch (status)
             {
                 case Status.Stop:
-                    // time が正になるまで進める
                     if (time < 0)
                     {
                         time += deltaTimeCache;
                     }
-                    // 再生を開始する
                     else
                     {
                         playback = musicPlayer.Start();
@@ -103,7 +101,6 @@ namespace Lyrid.GameScene.Audio
                             status = Status.Ended;
                         }
                     }
-                    // サンプリング時以外は deltaTime 分だけ進める
                     else
                     {
                         time += deltaTimeCache;

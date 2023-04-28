@@ -25,6 +25,10 @@ MonoBehaviour:
     m_Address: tapsound
     m_ReadOnly: 0
     m_SerializedLabels: []
+  - m_GUID: e40b39ab2352bc24f9410dbc605e95db
+    m_Address: MusicInfo
+    m_ReadOnly: 0
+    m_SerializedLabels: []
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 2bb42c8f1f72dae40a69d1fcf36ad966, type: 2}
   m_SchemaSet:
