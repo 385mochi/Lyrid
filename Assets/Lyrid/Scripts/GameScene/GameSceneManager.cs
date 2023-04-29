@@ -6,6 +6,7 @@ using CriWare;
 using CriWare.Assets;
 using DG.Tweening;
 using Lyrid.Common;
+using Lyrid.Common.UI;
 using static Lyrid.Common.CommonConsts;
 using static Lyrid.Common.Easings;
 using Lyrid.GameScene.Audio;

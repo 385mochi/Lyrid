@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
 using Lyrid.Common;
+using Lyrid.Common.UI;
 using static Lyrid.Common.CommonConsts;
 using Lyrid.GameScene;
 using Lyrid.SelectScene.UI;

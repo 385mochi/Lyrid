@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
-using Lyrid.Common;
+using Lyrid.Common.UI;
 using static Lyrid.Common.CommonConsts;
 using Lyrid.SelectScene;
 
@@ -103,12 +103,11 @@ namespace Lyrid.ResultScene
         public void LoadSelectScene()
         {
             // ロード画面を表示させる
-            loadingScreen.SetVisible(backGroundImage.sprite).OnComplete(() => {
-                selectSceneObj.GetComponent<SelectSceneManager>().Init();
+            loadingScreen.SetVisible(backGroundImage.sprite).OnComplete(async () => {
+                await selectSceneObj.GetComponent<SelectSceneManager>().Init();
                 gameObject.SetActive(false);
             });
         }
         #endregion
     }
-
 }

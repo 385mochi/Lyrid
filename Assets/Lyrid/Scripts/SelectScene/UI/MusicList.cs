@@ -28,6 +28,11 @@ namespace Lyrid.SelectScene.UI
         public Difficulty difficulty { get; private set; }
         #endregion
 
+        private void Start()
+        {
+            selectedIndex = -1;
+        }
+
         public async Task Init()
         {
             // Contents 以下のオブジェクトをすべて破棄する
@@ -41,8 +46,28 @@ namespace Lyrid.SelectScene.UI
             if (difficulty != Difficulty.None) SetDifficulty(difficulty);
             else SetDifficulty(Difficulty.Normal);
             SetSnapPos();
-            selectedIndex = -1;
+            SetPrevPos();
             Select();
+        }
+
+        private void SetSnapPos()
+        {
+            snapPosList = new List<float>();
+            var vlp = contentObj.GetComponent<VerticalLayoutGroup>();
+            spacing = vlp.spacing;
+            for (int i = 0; i < musicBoxList.Count; i++)
+            {
+                snapPosList.Add(spacing * i);
+            }
+        }
+
+        public void SetPrevPos()
+        {
+            if (selectedIndex != -1)
+            {
+                contentObj.GetComponent<RectTransform>().anchoredPosition = new Vector2(0.0f, snapPosList[selectedIndex]);
+                selectedIndex = -1;
+            }
         }
 
         public async void Select()
@@ -62,8 +87,8 @@ namespace Lyrid.SelectScene.UI
             {
                 for (int i = 0; i < snapPosList.Count; i++)
                 {
-                    if (snapPosList[i] - spacing <= pos &&
-                        snapPosList[i] + spacing >= pos)
+                    if (snapPosList[i] - spacing * 0.5f <= pos &&
+                        snapPosList[i] + spacing * 0.5f >= pos)
                     {
                         index = i;
                         break;
@@ -203,17 +228,6 @@ namespace Lyrid.SelectScene.UI
         public void StopMusicClip()
         {
             musicClipPlayer.Stop();
-        }
-
-        private void SetSnapPos()
-        {
-            snapPosList = new List<float>();
-            var vlp = contentObj.GetComponent<VerticalLayoutGroup>();
-            spacing = vlp.spacing;
-            for (int i = 0; i < musicBoxList.Count; i++)
-            {
-                snapPosList.Add(spacing * i);
-            }
         }
     }
 }
