@@ -20,16 +20,20 @@ MonoBehaviour:
   - m_GUID: 90431848b0fe6804181e0fa5d5598fdb
     m_Address: saisyuu_koufukuron_audio
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - default
   - m_GUID: da29ea1c9c75d4d4ba8441c0a1925e7a
     m_Address: saisyuu_koufukuron_image
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - default
   - m_GUID: f4422adc0a3d9a4499233dc55955793d
     m_Address: saisyuu_koufukuron_image_blurred
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - default
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 2bb42c8f1f72dae40a69d1fcf36ad966, type: 2}
   m_SchemaSet:
-    m_Schemas: []
+    m_Schemas:
+    - {fileID: 11400000, guid: e84839c97835c604985e3a96b9bf934c, type: 2}
