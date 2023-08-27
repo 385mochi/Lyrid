@@ -1226,7 +1226,7 @@ RectTransform:
   m_GameObject: {fileID: 158820165}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.5417816, y: 0.5417816, z: 0.5417816}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1025181603}
@@ -1236,7 +1236,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 1920, y: 1080}
+  m_SizeDelta: {x: 1920, y: 1312.3369}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &158820167
 MonoBehaviour:
@@ -1431,9 +1431,9 @@ Camera:
   m_FocalLength: 50
   m_NormalizedViewPortRect:
     serializedVersion: 2
-    x: 0
+    x: 0.00037428737
     y: 0
-    width: 1
+    width: 0.9992514
     height: 1
   near clip plane: 4.1
   far clip plane: 20
@@ -5931,7 +5931,7 @@ RectTransform:
   m_GameObject: {fileID: 711708249}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.33802083, y: 0.33802083, z: 0.33802083}
+  m_LocalScale: {x: 0.5417816, y: 0.5417816, z: 0.5417816}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 402995988}
@@ -5949,7 +5949,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 1920, y: 2777.9353}
+  m_SizeDelta: {x: 1920, y: 1312.3369}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &711708251
 MonoBehaviour:
@@ -6265,7 +6265,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &793326304
 Transform:
   m_ObjectHideFlags: 0
@@ -6962,7 +6962,7 @@ RectTransform:
   m_GameObject: {fileID: 927537015}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.5417816, y: 0.5417816, z: 0.5417816}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 594559476}
@@ -6977,7 +6977,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 1920, y: 1080}
+  m_SizeDelta: {x: 1920, y: 1312.3369}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &927537017
 MonoBehaviour:
@@ -7576,7 +7576,7 @@ RectTransform:
   m_GameObject: {fileID: 983585281}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.5407408, y: 0.5407408, z: 0.5407408}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2050341212}
@@ -7589,7 +7589,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 1920, y: 1080}
+  m_SizeDelta: {x: 1920, y: 1079.9999}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &983585283
 MonoBehaviour:
@@ -9015,9 +9015,9 @@ Camera:
   m_FocalLength: 50
   m_NormalizedViewPortRect:
     serializedVersion: 2
-    x: 0
+    x: 0.00037428737
     y: 0
-    width: 1
+    width: 0.9992514
     height: 1
   near clip plane: 0.3
   far clip plane: 20
@@ -9114,7 +9114,7 @@ RectTransform:
   m_GameObject: {fileID: 1170529258}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.9997834, y: 0.9997834, z: 0.9997834}
+  m_LocalScale: {x: 0.5417816, y: 0.5417816, z: 0.5417816}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1232395049}
@@ -9125,7 +9125,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 1919.9999, y: 30.006498}
+  m_SizeDelta: {x: 1920, y: 1312.3369}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1170529260
 MonoBehaviour:
@@ -9139,7 +9139,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ffe4f0d2d1ebcaa40ba2f0bb17e42714, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  camera: {fileID: 0}
+  camera: {fileID: 1160875691}
   refRect: {fileID: 1170529259}
   referenceResolution: {x: 1920, y: 1080}
   matchWidthOrHeight: 0
@@ -10031,9 +10031,9 @@ Camera:
   m_FocalLength: 50
   m_NormalizedViewPortRect:
     serializedVersion: 2
-    x: 0
+    x: 0.00037428737
     y: 0
-    width: 1
+    width: 0.9992514
     height: 1
   near clip plane: 0.3
   far clip plane: 20
@@ -10653,7 +10653,7 @@ RectTransform:
   m_GameObject: {fileID: 1303072483}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.5407408, y: 0.5407408, z: 0.5407408}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1780640093}
@@ -10663,7 +10663,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 1920, y: 1080.0001}
+  m_SizeDelta: {x: 1920, y: 1079.9999}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1303072485
 MonoBehaviour:
@@ -12064,7 +12064,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 1080}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &1497229629
 MonoBehaviour:
@@ -15675,7 +15675,7 @@ RectTransform:
   m_GameObject: {fileID: 2018438806}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.5407408, y: 0.5407408, z: 0.5407408}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1871421140}
@@ -15698,7 +15698,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 1920, y: 1080}
+  m_SizeDelta: {x: 1920, y: 1079.9999}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2018438808
 MonoBehaviour:
@@ -16150,7 +16150,7 @@ RectTransform:
   m_GameObject: {fileID: 2060534696}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.5417816, y: 0.5417816, z: 0.5417816}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1948097169}
@@ -16160,7 +16160,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 1920, y: 1080}
+  m_SizeDelta: {x: 1920, y: 1312.3369}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2060534698
 MonoBehaviour:

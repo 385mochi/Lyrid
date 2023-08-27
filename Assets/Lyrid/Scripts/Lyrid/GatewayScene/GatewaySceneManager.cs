@@ -150,7 +150,7 @@ namespace Lyrid.GatewayScene
 
         public void EndInitProcessing()
         {
-            titleMessage.text = "ゲームを起動します...";
+            titleMessage.text = "ゲームを起動中...";
             LoadHomeScene();
         }
 

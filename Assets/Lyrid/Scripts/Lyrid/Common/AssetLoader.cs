@@ -25,19 +25,22 @@ namespace Lyrid.Common
         }
 
         /// <summary>
-        /// 指定されたアドレスに紐づくアセットが存在するかどうか判定するメソッド
+        /// 指定されたアドレスに紐づくアセットが存在するかどうか判定する
         /// </summary>
         /// <param name="key"> アドレス名 </param>
         /// <returns> アセットが存在するかどうか </returns>
         private async Task<bool> Exists(string key)
         {
+            Debug.Log($"{key} が存在するか確認");
             var handle = Addressables.LoadResourceLocationsAsync(key);
             await handle.Task;
-            return (handle.Result != null && 0 < handle.Result.Count);
+            Debug.Log(handle.Result);
+            Debug.Log(handle.Result.Count);
+            return (handle.Status == AsyncOperationStatus.Succeeded && handle.Result != null && 0 < handle.Result.Count);
         }
 
         /// <summary>
-        /// handleDict の全ての handle を解放するメソッド
+        /// handleDict の全ての handle を解放する
         /// </summary>
         public void ReleaseAll()
         {
@@ -49,7 +52,7 @@ namespace Lyrid.Common
         }
 
         /// <summary>
-        /// 指定されたアドレスに紐づく音源 (acb ファイル) をロードするメソッド
+        /// 指定されたアドレスに紐づく音源 (acb ファイル) をロードする
         /// </summary>
         /// <param name="key"> アドレス名 </param>
         /// <returns> ロードした acb ファイル </returns>
@@ -70,7 +73,7 @@ namespace Lyrid.Common
         }
 
         /// <summary>
-        /// 指定されたアドレスに紐づく Sprite をロードするメソッド
+        /// 指定されたアドレスに紐づく Sprite をロードする
         /// </summary>
         /// <param name="key"> アドレス名 </param>
         /// <returns> ロードした Sprite </returns>
@@ -90,13 +93,14 @@ namespace Lyrid.Common
         }
 
         /// <summary>
-        /// 指定されたアドレスに紐づく TextAsset をロードするメソッド
+        /// 指定されたアドレスに紐づく TextAsset をロードする
         /// </summary>
         /// <param name="key"> アドレス名 </param>
         /// <returns> ロードした TextAsset </returns>
         public async Task<TextAsset> LoadTextAssetAsync(string key)
         {
             bool exists = await Exists(key);
+            Debug.Log(exists);
             if (!exists) return null;
             if (handleDict.ContainsKey(key))
             {

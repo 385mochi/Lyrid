@@ -12,5 +12,12 @@ namespace LyridEditor.UI
     public class SettingsManager : MonoBehaviour
     {
         public GameObject barSettingsObj;
+        public GameObject barLineSettingsObj;
+
+        public void ClearAll()
+        {
+            if (barSettingsObj.activeSelf) barSettingsObj.SetActive(false);
+            if (barLineSettingsObj.activeSelf) barLineSettingsObj.SetActive(false);
+        }
     }
 }
